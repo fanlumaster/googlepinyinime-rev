@@ -1,6 +1,6 @@
 ---
-BasedOnStyle: llvm
-IndentWidth: 2
+BasedOnStyle: Google
+IndentWidth: 4
 
 # do not sort header files
 SortIncludes: false

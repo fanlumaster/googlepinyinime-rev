@@ -8,7 +8,7 @@
       "name": "(gdb) Launch",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build/bin/linuxcppdemo",
+      "program": "${workspaceFolder}/build/bin/pinyinime",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${fileDirname}",
