@@ -20,18 +20,55 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#ifdef _WIN32
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <assert.h>
 #include <ctype.h>
 #include <sys/types.h>
-#include <sys/time.h>
-#include <time.h>
+#ifdef _WIN32
+#undef max
+#undef min
+#include <windows.h>
+#else
 #include <pthread.h>
+#endif
 #include <math.h>
 
 namespace ime_pinyin {
+
+#ifdef _WIN32
+static int gettimeofday(struct timeval *tp, void *) {
+    if (!tp) {
+        return -1;
+    }
+
+    // 获取当前时间的 FILETIME
+    FILETIME ft;
+    GetSystemTimeAsFileTime(&ft);
+
+    // 将 FILETIME 转换为 1970 年以来的时间（Unix 时间）
+    ULARGE_INTEGER ull;
+    ull.LowPart = ft.dwLowDateTime;
+    ull.HighPart = ft.dwHighDateTime;
+
+    // FILETIME 是从 1601 年 1 月 1 日开始的 100 纳秒单位时间
+    const long long WINDOWS_TICKS_PER_SEC = 10000000LL;  // 每秒 1e7 个 100 纳秒单位
+    const long long EPOCH_DIFFERENCE = 11644473600LL;    // Unix epoch 到 Windows epoch 的秒数差
+
+    long long unix_time_in_microseconds = ull.QuadPart / 10 - EPOCH_DIFFERENCE * 1000000LL;
+
+    // 填充 timeval 结构
+    tp->tv_sec = (long)(unix_time_in_microseconds / 1000000LL);
+    tp->tv_usec = (long)(unix_time_in_microseconds % 1000000LL);
+
+    return 0;
+}
+#endif
 
 #ifdef ___DEBUG_PERF___
 static uint64 _ellapse_ = 0;
@@ -53,7 +90,15 @@ static struct timeval _tv_start_, _tv_end_;
 #endif
 
 // XXX File load and write are thread-safe by g_mutex_
+#ifdef _WIN32
+static CRITICAL_SECTION g_mutex_;  // 使用 Windows 的临界区对象
+#define pthread_mutex_lock(MUTEX) EnterCriticalSection(MUTEX)
+#define pthread_mutex_unlock(MUTEX) LeaveCriticalSection(MUTEX)
+#define pthread_mutex_trylock(MUTEX) (TryEnterCriticalSection(MUTEX) != 0)
+#else
+#include <pthread.h>
 static pthread_mutex_t g_mutex_ = PTHREAD_MUTEX_INITIALIZER;
+#endif
 static struct timeval g_last_update_ = {0, 0};
 
 inline uint32 UserDict::get_dict_file_size(UserDictInfo *info) {
@@ -264,6 +309,7 @@ bool UserDict::load_dict(const char *file_name, LemmaIdType start_id, LemmaIdTyp
     return true;
 error:
     free((void *)dict_file_);
+    dict_file_ = NULL;
     start_id_ = 0;
     return false;
 }
@@ -900,6 +946,7 @@ bool UserDict::remove_lemma(LemmaIdType lemma_id) {
 
 void UserDict::flush_cache() {
     LemmaIdType start_id = start_id_;
+    if (!dict_file_) return;
     const char *file = strdup(dict_file_);
     if (!file) return;
     close_dict();
@@ -1164,7 +1211,9 @@ void UserDict::write_back() {
     // It seems truncate is not need on Linux, Windows except Mac
     // I am doing it here anyway for safety.
     off_t cur = lseek(fd, 0, SEEK_CUR);
+#ifndef _WIN32
     ftruncate(fd, cur);
+#endif
     close(fd);
     state_ = USER_DICT_SYNC;
 }

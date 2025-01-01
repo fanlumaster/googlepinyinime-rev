@@ -18,7 +18,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#ifdef _WIN32
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 #include "../src/include/dicttrie.h"
 
 using namespace ime_pinyin;

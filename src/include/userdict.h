@@ -24,7 +24,13 @@
 // Debug performance for operations
 // #define ___DEBUG_PERF___
 
+#ifdef _WIN32
+#include <time.h>
+#include <winsock.h> // timeval
+#else
 #include <pthread.h>
+#include <sys/time.h>
+#endif
 #include "atomdictbase.h"
 
 namespace ime_pinyin {
