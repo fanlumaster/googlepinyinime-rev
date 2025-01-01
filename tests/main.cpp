@@ -23,7 +23,7 @@ int main() {
     size_t cand_cnt = ime_pinyin::im_search(pinyin.c_str(), pinyin.size());
     ime_pinyin::char16 buf[256] = {0};
     std::string msg;
-    for (size_t i = 0; i < 100; ++i) {
+    for (size_t i = 0; i < cand_cnt; ++i) {
         ime_pinyin::im_get_candidate(i, buf, 255);
         size_t len = 0;
         while (buf[len] != 0 && len < 255) ++len;
