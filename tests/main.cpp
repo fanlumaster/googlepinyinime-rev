@@ -5,6 +5,7 @@
 #include <locale>
 #include <string>
 #include <vector>
+#include <cstring>
 
 std::string fromUtf16(const ime_pinyin::char16 *buf, size_t len) {
     std::u16string utf16Str(reinterpret_cast<const char16_t *>(buf), len);
@@ -59,7 +60,7 @@ void test_pinyin_search_and_segment(const std::string &user_pinyin) {
 }
 
 int main() {
-    ime_pinyin::im_set_max_lens(80, 30);
+    ime_pinyin::im_set_max_lens(64, 32);
     if (!ime_pinyin::im_open_decoder("./data/dict_pinyin.dat", "./data/user_dict.dat")) {
         std::cout << "fany bug.\n";
         return 0;
@@ -69,9 +70,8 @@ int main() {
     test_pinyin_search_and_segment("yiwushichushima");
     test_pinyin_search_and_segment("zhonghuarenmingongheguo");
     test_pinyin_search_and_segment("meilijianhezhongguo");
-    ime_pinyin::im_set_max_lens(64, 64);
-    ime_pinyin::im_reset_search();
     test_pinyin_search_and_segment("qunimadegouridequsibawonengzenmeban");
     test_pinyin_search_and_segment("kanbuchulaishizenmexianzhichangdude");
+    test_pinyin_search_and_segment("ninininininininininininininininini");
     return 0;
 }
