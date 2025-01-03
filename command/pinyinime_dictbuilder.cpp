@@ -17,7 +17,6 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <time.h>
 #ifdef _WIN32
 #include <io.h>
 #else

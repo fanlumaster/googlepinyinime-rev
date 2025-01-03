@@ -1059,14 +1059,14 @@ void MatrixSearch::prepare_candidates() {
     if (kPrintDebug0) {
         printf("-----Prepare candidates, score:\n");
         for (size_t a = 0; a < lpi_total_; a++) {
-            printf("[%03d]%d    ", a, lpi_items_[a].psb);
+            printf("[%03zu]%d    ", a, lpi_items_[a].psb);
             if ((a + 1) % 6 == 0) printf("\n");
         }
         printf("\n");
     }
 
     if (kPrintDebug0) {
-        printf("--- lpi_total_ = %d\n", lpi_total_);
+        printf("--- lpi_total_ = %zu\n", lpi_total_);
     }
 }
 
@@ -1331,7 +1331,7 @@ size_t MatrixSearch::extend_dmi(DictExtPara *dep, DictMatchInfo *dmi_s) {
         if (0 == lpi_total_) return ret_val;
 
         if (kPrintDebug0) {
-            printf("--- lpi_total_ = %d\n", lpi_total_);
+            printf("--- lpi_total_ = %zu\n", lpi_total_);
         }
 
         myqsort(lpi_items_, lpi_total_, sizeof(LmaPsbItem), cmp_lpi_with_psb);
@@ -1457,7 +1457,7 @@ char16 *MatrixSearch::get_candidate0(char16 *cand_str, size_t max_len, uint16 *r
         id_num++;
 
         if (kPrintDebug1) {
-            printf("---MatrixNode [step: %d, lma_idx: %d, total score:%.5f]\n", mtrx_nd->step, mtrx_nd->id, mtrx_nd->score);
+            printf("---MatrixNode [step: %d, lma_idx: %zu, total score:%.5f]\n", mtrx_nd->step, mtrx_nd->id, mtrx_nd->score);
             debug_print_dmi(mtrx_nd->dmi_fr, 1);
         }
 

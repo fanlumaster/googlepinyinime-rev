@@ -16,7 +16,6 @@
 
 #include <stdlib.h>
 #include "../include/pinyinime.h"
-#include "../include/dicttrie.h"
 #include "../include/matrixsearch.h"
 #include "../include/spellingtrie.h"
 

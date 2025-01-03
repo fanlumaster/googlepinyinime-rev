@@ -73,5 +73,9 @@ int main() {
     test_pinyin_search_and_segment("qunimadegouridequsibawonengzenmeban");
     test_pinyin_search_and_segment("kanbuchulaishizenmexianzhichangdude");
     test_pinyin_search_and_segment("ninininininininininininininininini");
+    test_pinyin_search_and_segment("jingjiandao");
+    test_pinyin_search_and_segment("zhen'ta'ma'an'jing");
+    test_pinyin_search_and_segment("zh'ta'ma'an'jing");
+    test_pinyin_search_and_segment("ni'shuo'ni'ma'ne");
     return 0;
 }
