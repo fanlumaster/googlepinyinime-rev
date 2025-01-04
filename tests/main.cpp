@@ -59,6 +59,34 @@ void test_pinyin_search_and_segment(const std::string &user_pinyin) {
     std::cout << "函数执行时间: " << duration.count() << " 微秒\n";
 }
 
+void test_pinyin_search_when_retriving_first_element(const std::string &user_pinyin) {
+    auto start_time = std::chrono::high_resolution_clock::now();  // 开始计时
+
+    std::string pinyin_str = user_pinyin;
+
+    const char *pinyin = pinyin_str.c_str();
+    size_t cand_cnt = ime_pinyin::im_search(pinyin, strlen(pinyin));
+    std::string msg;
+    std::vector<std::string> candidateList;
+    cand_cnt = cand_cnt > 1 ? 1 : cand_cnt;
+    for (size_t i = 0; i < cand_cnt; ++i) {
+        ime_pinyin::char16 buf[256] = {0};
+        ime_pinyin::im_get_candidate(i, buf, 255);
+        size_t len = 0;
+        while (buf[len] != 0 && len < 255) ++len;
+        msg.append(fromUtf16(buf, len) + " ");
+        candidateList.push_back(fromUtf16(buf, len));
+    }
+
+    std::cout << "候选项数量: " << cand_cnt << std::endl;
+    std::cout << "候选项本体: " << msg << std::endl;
+
+    auto end_time = std::chrono::high_resolution_clock::now();  // 结束计时
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+
+    std::cout << "函数执行时间: " << duration.count() << " 微秒\n";
+}
+
 int main() {
     ime_pinyin::im_set_max_lens(64, 32);
     if (!ime_pinyin::im_open_decoder("./data/dict_pinyin.dat", "./data/user_dict.dat")) {
@@ -77,5 +105,7 @@ int main() {
     test_pinyin_search_and_segment("zhen'ta'ma'an'jing");
     test_pinyin_search_and_segment("zh'ta'ma'an'jing");
     test_pinyin_search_and_segment("ni'shuo'ni'ma'ne");
+    test_pinyin_search_when_retriving_first_element("qunimadegouridequsibawonengzenmeban");
+    test_pinyin_search_when_retriving_first_element("zh'ta'ma'an'jing");
     return 0;
 }
