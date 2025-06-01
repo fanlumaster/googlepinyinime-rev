@@ -245,7 +245,7 @@ const char* SpellingTable::arrange(size_t* item_size, size_t* spl_num) {
             this_spl_buf[spelling_size_ - 1] = static_cast<char>((unsigned char)score);
 
             if (kPrintDebug0) {
-                printf("---pos:%d, %s, psb:%d\n", pos, this_spl_buf, (unsigned char)this_spl_buf[spelling_size_ - 1]);
+                printf("---pos:%zu, %s, psb:%d\n", pos, this_spl_buf, (unsigned char)this_spl_buf[spelling_size_ - 1]);
             }
         }
         average_score /= spelling_num_;

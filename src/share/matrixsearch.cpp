@@ -1307,7 +1307,7 @@ size_t MatrixSearch::extend_dmi(DictExtPara *dep, DictMatchInfo *dmi_s) {
         if (handles[1] > 0) {
             if (kPrintDebug0) {
                 for (size_t t = 0; t < lpi_num; t++) {
-                    printf("--Extend in user dict: uid:%d uscore:%d\n", lpi_items_[lpi_total_ + t].id, lpi_items_[lpi_total_ + t].psb);
+                    printf("--Extend in user dict: uid:%zu uscore:%d\n", lpi_items_[lpi_total_ + t].id, lpi_items_[lpi_total_ + t].psb);
                 }
             }
             lpi_total_ += lpi_num;
