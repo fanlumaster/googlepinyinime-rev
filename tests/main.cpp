@@ -8,19 +8,17 @@
 #include <Windows.h>
 
 std::string fromUtf16(const ime_pinyin::char16 *buf, size_t len) {
-    // 先将输入的 UTF-16 buffer 转成 std::u16string（等价于 char16_t）
     const char16_t *utf16Data = reinterpret_cast<const char16_t *>(buf);
     std::u16string utf16Str(utf16Data, len);
 
     std::string utf8Result;
-    // 使用 utfcpp 提供的 utf16to8 转换迭代器，将 UTF-16 转为 UTF-8
     utf8::utf16to8(utf16Str.begin(), utf16Str.end(), std::back_inserter(utf8Result));
 
     return utf8Result;
 }
 
 void test_pinyin_search_and_segment(const std::string &user_pinyin) {
-    auto start_time = std::chrono::high_resolution_clock::now();  // 开始计时
+    auto start_time = std::chrono::high_resolution_clock::now();
 
     std::string pinyin_str = user_pinyin;
 
@@ -37,10 +35,10 @@ void test_pinyin_search_and_segment(const std::string &user_pinyin) {
             std::string segment(pinyin + start, end - start);
             segmented_pinyin += segment;
             if (i < segment_count - 1) {
-                segmented_pinyin += "'";  // 在分段之间添加分词符
+                segmented_pinyin += "'";
             }
         }
-        std::cout << "拼音分词：" << segmented_pinyin << "\n";
+        std::cout << "Pinyin segmented：" << segmented_pinyin << "\n";
     } else {
         std::cout << "Failed to get segments or no segments found!\n";
     }
@@ -56,17 +54,18 @@ void test_pinyin_search_and_segment(const std::string &user_pinyin) {
         candidateList.push_back(fromUtf16(buf, len));
     }
 
-    std::cout << "候选项数量: " << cand_cnt << std::endl;
-    std::cout << "候选项本体: " << msg << std::endl;
+    std::cout << "Count of candidates: " << cand_cnt << std::endl;
+    std::cout << "Candidates: " << msg << std::endl;
 
-    auto end_time = std::chrono::high_resolution_clock::now();  // 结束计时
+    auto end_time = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
 
-    std::cout << "函数执行时间: " << duration.count() << " 微秒\n";
+    std::cout << "Time used: " << duration.count() << " us\n";
+    std::cout << "========================================" << std::endl;
 }
 
 void test_pinyin_search_when_retriving_first_element(const std::string &user_pinyin) {
-    auto start_time = std::chrono::high_resolution_clock::now();  // 开始计时
+    auto start_time = std::chrono::high_resolution_clock::now();
 
     std::string pinyin_str = user_pinyin;
 
@@ -84,13 +83,14 @@ void test_pinyin_search_when_retriving_first_element(const std::string &user_pin
         candidateList.push_back(fromUtf16(buf, len));
     }
 
-    std::cout << "候选项数量: " << cand_cnt << std::endl;
-    std::cout << "候选项本体: " << msg << std::endl;
+    std::cout << "Count of candidates: " << cand_cnt << std::endl;
+    std::cout << "Candidates: " << msg << std::endl;
 
-    auto end_time = std::chrono::high_resolution_clock::now();  // 结束计时
+    auto end_time = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
 
-    std::cout << "函数执行时间: " << duration.count() << " 微秒\n";
+    std::cout << "Time used: " << duration.count() << " us\n";
+    std::cout << "========================================" << std::endl;
 }
 
 int main() {
@@ -112,10 +112,12 @@ int main() {
     test_pinyin_search_and_segment("ninininininininininininininininini");
     test_pinyin_search_and_segment("jingjiandao");
     test_pinyin_search_and_segment("zhen'ta'ma'an'jing");
-    test_pinyin_search_and_segment("zh'ta'ma'an'jing");
+    test_pinyin_search_and_segment("zhen'ta'ma'an'jing");
     test_pinyin_search_and_segment("ni'shuo'ni'ma'ne");
     test_pinyin_search_when_retriving_first_element("qunimadegouridequsibawonengzenmeban");
     test_pinyin_search_when_retriving_first_element("zh'ta'ma'an'jing");
     test_pinyin_search_when_retriving_first_element("ni'shuo'ne'ma'de");
+    test_pinyin_search_when_retriving_first_element("wei'ni'qian'gua'bu'bian");
+    test_pinyin_search_when_retriving_first_element("wo'lai'kan'kan'zhe'ge'zui'duo'neng'shu'ru'duo'shao'ge'zi'kan'shang'qu'shi'bi'jiao'he'li'de");
     return 0;
 }
