@@ -1,16 +1,22 @@
 #include "../src/include/pinyinime.h"
-#include <codecvt>
 #include <chrono>
 #include <iostream>
-#include <locale>
 #include <string>
 #include <vector>
 #include <cstring>
+#include <utf8cpp/utf8.h>
+#include <Windows.h>
 
 std::string fromUtf16(const ime_pinyin::char16 *buf, size_t len) {
-    std::u16string utf16Str(reinterpret_cast<const char16_t *>(buf), len);
-    std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> convert;
-    return convert.to_bytes(utf16Str);
+    // 先将输入的 UTF-16 buffer 转成 std::u16string（等价于 char16_t）
+    const char16_t *utf16Data = reinterpret_cast<const char16_t *>(buf);
+    std::u16string utf16Str(utf16Data, len);
+
+    std::string utf8Result;
+    // 使用 utfcpp 提供的 utf16to8 转换迭代器，将 UTF-16 转为 UTF-8
+    utf8::utf16to8(utf16Str.begin(), utf16Str.end(), std::back_inserter(utf8Result));
+
+    return utf8Result;
 }
 
 void test_pinyin_search_and_segment(const std::string &user_pinyin) {
@@ -88,6 +94,9 @@ void test_pinyin_search_when_retriving_first_element(const std::string &user_pin
 }
 
 int main() {
+#ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8);
+#endif
     ime_pinyin::im_set_max_lens(64, 32);
     if (!ime_pinyin::im_open_decoder("./data/dict_pinyin.dat", "./data/user_dict.dat")) {
         std::cout << "fany bug.\n";
@@ -107,5 +116,6 @@ int main() {
     test_pinyin_search_and_segment("ni'shuo'ni'ma'ne");
     test_pinyin_search_when_retriving_first_element("qunimadegouridequsibawonengzenmeban");
     test_pinyin_search_when_retriving_first_element("zh'ta'ma'an'jing");
+    test_pinyin_search_when_retriving_first_element("ni'shuo'ne'ma'de");
     return 0;
 }

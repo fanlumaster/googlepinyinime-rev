@@ -4,12 +4,23 @@ project(pinyinime VERSION 1.0 LANGUAGES CXX)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/include)
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_C_STANDARD 99)
-set(CMAKE_C_STANDARD_REQUIRED True)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
+add_definitions(
+    /D_UNICODE=1
+    /DUNICODE=1
+)
+
+# For utf8cpp, make it use C++11 and later
+add_compile_options(/Zc:__cplusplus)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# For pure-header libs installed by vcpkg like utf8cpp
+include_directories("./build/vcpkg_installed/x64-windows/include")
 
 set(HEADERS
     ./src/include/atomdictbase.h
