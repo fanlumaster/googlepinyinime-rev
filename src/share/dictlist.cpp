@@ -47,15 +47,15 @@ DictList::~DictList() { free_resource(); }
 
 bool DictList::alloc_resource(size_t buf_size, size_t scis_num) {
     // Allocate memory
-    buf_ = static_cast<char16 *>(malloc(buf_size * sizeof(char16)));
+    buf_ = static_cast<char16*>(malloc(buf_size * sizeof(char16)));
     if (NULL == buf_) return false;
 
     scis_num_ = scis_num;
 
-    scis_hz_ = static_cast<char16 *>(malloc(scis_num_ * sizeof(char16)));
+    scis_hz_ = static_cast<char16*>(malloc(scis_num_ * sizeof(char16)));
     if (NULL == scis_hz_) return false;
 
-    scis_splid_ = static_cast<SpellingId *>(malloc(scis_num_ * sizeof(SpellingId)));
+    scis_splid_ = static_cast<SpellingId*>(malloc(scis_num_ * sizeof(SpellingId)));
 
     if (NULL == scis_splid_) return false;
 
@@ -74,7 +74,7 @@ void DictList::free_resource() {
 }
 
 #ifdef ___BUILD_MODEL___
-bool DictList::init_list(const SingleCharItem *scis, size_t scis_num, const LemmaEntry *lemma_arr, size_t lemma_num) {
+bool DictList::init_list(const SingleCharItem* scis, size_t scis_num, const LemmaEntry* lemma_arr, size_t lemma_num) {
     if (NULL == scis || 0 == scis_num || NULL == lemma_arr || 0 == lemma_num) return false;
 
     initialized_ = false;
@@ -96,7 +96,7 @@ bool DictList::init_list(const SingleCharItem *scis, size_t scis_num, const Lemm
     return true;
 }
 
-size_t DictList::calculate_size(const LemmaEntry *lemma_arr, size_t lemma_num) {
+size_t DictList::calculate_size(const LemmaEntry* lemma_arr, size_t lemma_num) {
     size_t last_hz_len = 0;
     size_t list_size = 0;
     size_t id_num = 0;
@@ -152,7 +152,7 @@ size_t DictList::calculate_size(const LemmaEntry *lemma_arr, size_t lemma_num) {
     return start_pos_[kMaxLemmaSize];
 }
 
-void DictList::fill_scis(const SingleCharItem *scis, size_t scis_num) {
+void DictList::fill_scis(const SingleCharItem* scis, size_t scis_num) {
     assert(scis_num_ == scis_num);
 
     for (size_t pos = 0; pos < scis_num_; pos++) {
@@ -161,7 +161,7 @@ void DictList::fill_scis(const SingleCharItem *scis, size_t scis_num) {
     }
 }
 
-void DictList::fill_list(const LemmaEntry *lemma_arr, size_t lemma_num) {
+void DictList::fill_list(const LemmaEntry* lemma_arr, size_t lemma_num) {
     size_t current_pos = 0;
 
     utf16_strncpy(buf_, lemma_arr[0].hanzi_str, lemma_arr[0].hz_str_len);
@@ -181,8 +181,8 @@ void DictList::fill_list(const LemmaEntry *lemma_arr, size_t lemma_num) {
     assert(id_num == start_id_[kMaxLemmaSize]);
 }
 
-char16 *DictList::find_pos2_startedbyhz(char16 hz_char) {
-    char16 *found_2w = static_cast<char16 *>(mybsearch(&hz_char, buf_ + start_pos_[1], (start_pos_[2] - start_pos_[1]) / 2, sizeof(char16) * 2, cmp_hanzis_1));
+char16* DictList::find_pos2_startedbyhz(char16 hz_char) {
+    char16* found_2w = static_cast<char16*>(mybsearch(&hz_char, buf_ + start_pos_[1], (start_pos_[2] - start_pos_[1]) / 2, sizeof(char16) * 2, cmp_hanzis_1));
     if (NULL == found_2w) return NULL;
 
     while (found_2w > buf_ + start_pos_[1] && *found_2w == *(found_2w - 1)) found_2w -= 2;
@@ -191,8 +191,8 @@ char16 *DictList::find_pos2_startedbyhz(char16 hz_char) {
 }
 #endif  // ___BUILD_MODEL___
 
-char16 *DictList::find_pos_startedbyhzs(const char16 last_hzs[], size_t word_len, int (*cmp_func)(const void *, const void *)) {
-    char16 *found_w = static_cast<char16 *>(mybsearch(last_hzs, buf_ + start_pos_[word_len - 1], (start_pos_[word_len] - start_pos_[word_len - 1]) / word_len, sizeof(char16) * word_len, cmp_func));
+char16* DictList::find_pos_startedbyhzs(const char16 last_hzs[], size_t word_len, int (*cmp_func)(const void*, const void*)) {
+    char16* found_w = static_cast<char16*>(mybsearch(last_hzs, buf_ + start_pos_[word_len - 1], (start_pos_[word_len] - start_pos_[word_len - 1]) / word_len, sizeof(char16) * word_len, cmp_func));
 
     if (NULL == found_w) return NULL;
 
@@ -201,20 +201,20 @@ char16 *DictList::find_pos_startedbyhzs(const char16 last_hzs[], size_t word_len
     return found_w;
 }
 
-size_t DictList::predict(const char16 last_hzs[], uint16 hzs_len, NPredictItem *npre_items, size_t npre_max, size_t b4_used) {
+size_t DictList::predict(const char16 last_hzs[], uint16 hzs_len, NPredictItem* npre_items, size_t npre_max, size_t b4_used) {
     assert(hzs_len <= kMaxPredictSize && hzs_len > 0);
 
     // 1. Prepare work
-    int (*cmp_func)(const void *, const void *) = cmp_func_[hzs_len - 1];
+    int (*cmp_func)(const void*, const void*) = cmp_func_[hzs_len - 1];
 
-    NGram &ngram = NGram::get_instance();
+    NGram& ngram = NGram::get_instance();
 
     size_t item_num = 0;
 
     // 2. Do prediction
     for (uint16 pre_len = 1; pre_len <= kMaxPredictSize + 1 - hzs_len; pre_len++) {
         uint16 word_len = hzs_len + pre_len;
-        char16 *w_buf = find_pos_startedbyhzs(last_hzs, word_len, cmp_func);
+        char16* w_buf = find_pos_startedbyhzs(last_hzs, word_len, cmp_func);
         if (NULL == w_buf) continue;
         while (w_buf < buf_ + start_pos_[word_len] && cmp_func(w_buf, last_hzs) == 0 && item_num < npre_max) {
             memset(npre_items + item_num, 0, sizeof(NPredictItem));
@@ -243,7 +243,7 @@ size_t DictList::predict(const char16 last_hzs[], uint16 hzs_len, NPredictItem *
     return new_num;
 }
 
-uint16 DictList::get_lemma_str(LemmaIdType id_lemma, char16 *str_buf, uint16 str_max) {
+uint16 DictList::get_lemma_str(LemmaIdType id_lemma, char16* str_buf, uint16 str_max) {
     if (!initialized_ || id_lemma >= start_id_[kMaxLemmaSize] || NULL == str_buf || str_max <= 1) return 0;
 
     // Find the range
@@ -252,7 +252,7 @@ uint16 DictList::get_lemma_str(LemmaIdType id_lemma, char16 *str_buf, uint16 str
         if (start_id_[i] <= id_lemma && start_id_[i + 1] > id_lemma) {
             size_t id_span = id_lemma - start_id_[i];
 
-            uint16 *buf = buf_ + start_pos_[i] + id_span * (i + 1);
+            uint16* buf = buf_ + start_pos_[i] + id_span * (i + 1);
             for (uint16 len = 0; len <= i; len++) {
                 str_buf[len] = buf[len];
             }
@@ -263,15 +263,15 @@ uint16 DictList::get_lemma_str(LemmaIdType id_lemma, char16 *str_buf, uint16 str
     return 0;
 }
 
-uint16 DictList::get_splids_for_hanzi(char16 hanzi, uint16 half_splid, uint16 *splids, uint16 max_splids) {
-    char16 *hz_found = static_cast<char16 *>(mybsearch(&hanzi, scis_hz_, scis_num_, sizeof(char16), cmp_hanzis_1));
+uint16 DictList::get_splids_for_hanzi(char16 hanzi, uint16 half_splid, uint16* splids, uint16 max_splids) {
+    char16* hz_found = static_cast<char16*>(mybsearch(&hanzi, scis_hz_, scis_num_, sizeof(char16), cmp_hanzis_1));
     assert(NULL != hz_found && hanzi == *hz_found);
 
     // Move to the first one.
     while (hz_found > scis_hz_ && hanzi == *(hz_found - 1)) hz_found--;
 
     // First try to found if strict comparison result is not zero.
-    char16 *hz_f = hz_found;
+    char16* hz_f = hz_found;
     bool strict = false;
     while (hz_f < scis_hz_ + scis_num_ && hanzi == *hz_f) {
         uint16 pos = hz_f - scis_hz_;
@@ -295,10 +295,10 @@ uint16 DictList::get_splids_for_hanzi(char16 hanzi, uint16 half_splid, uint16 *s
     return found_num;
 }
 
-LemmaIdType DictList::get_lemma_id(const char16 *str, uint16 str_len) {
+LemmaIdType DictList::get_lemma_id(const char16* str, uint16 str_len) {
     if (NULL == str || str_len > kMaxLemmaSize) return 0;
 
-    char16 *found = find_pos_startedbyhzs(str, str_len, cmp_func_[str_len - 1]);
+    char16* found = find_pos_startedbyhzs(str, str_len, cmp_func_[str_len - 1]);
     if (NULL == found) return 0;
 
     assert(found > buf_);
@@ -306,7 +306,7 @@ LemmaIdType DictList::get_lemma_id(const char16 *str, uint16 str_len) {
     return static_cast<LemmaIdType>(start_id_[str_len - 1] + (found - buf_ - start_pos_[str_len - 1]) / str_len);
 }
 
-void DictList::convert_to_hanzis(char16 *str, uint16 str_len) {
+void DictList::convert_to_hanzis(char16* str, uint16 str_len) {
     assert(NULL != str);
 
     for (uint16 str_pos = 0; str_pos < str_len; str_pos++) {
@@ -314,7 +314,7 @@ void DictList::convert_to_hanzis(char16 *str, uint16 str_len) {
     }
 }
 
-void DictList::convert_to_scis_ids(char16 *str, uint16 str_len) {
+void DictList::convert_to_scis_ids(char16* str, uint16 str_len) {
     assert(NULL != str);
 
     for (uint16 str_pos = 0; str_pos < str_len; str_pos++) {
@@ -322,7 +322,7 @@ void DictList::convert_to_scis_ids(char16 *str, uint16 str_len) {
     }
 }
 
-bool DictList::save_list(FILE *fp) {
+bool DictList::save_list(FILE* fp) {
     if (!initialized_ || NULL == fp) return false;
 
     if (NULL == buf_ || 0 == start_pos_[kMaxLemmaSize] || NULL == scis_hz_ || NULL == scis_splid_ || 0 == scis_num_) return false;
@@ -342,7 +342,7 @@ bool DictList::save_list(FILE *fp) {
     return true;
 }
 
-bool DictList::load_list(FILE *fp) {
+bool DictList::load_list(FILE* fp) {
     if (NULL == fp) return false;
 
     initialized_ = false;

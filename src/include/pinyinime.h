@@ -33,7 +33,7 @@ namespace ime_pinyin {
  * @param fn_usr_dict The file name of the user dictionary.
  * @return true if open the decoder engine successfully.
  */
-bool im_open_decoder(const char *fn_sys_dict, const char *fn_usr_dict);
+bool im_open_decoder(const char* fn_sys_dict, const char* fn_usr_dict);
 
 /**
  * Open the decoder engine via the system dictionary FD and user dictionary
@@ -47,7 +47,7 @@ bool im_open_decoder(const char *fn_sys_dict, const char *fn_usr_dict);
  * counted in byte.
  * @return true if succeed.
  */
-bool im_open_decoder_fd(int sys_fd, long start_offset, long length, const char *fn_usr_dict);
+bool im_open_decoder_fd(int sys_fd, long start_offset, long length, const char* fn_usr_dict);
 
 /**
  * Close the decoder engine.
@@ -86,7 +86,7 @@ void im_flush_cache();
  * @param sps_len The length of the spelling string buffer.
  * @return The number of candidates.
  */
-size_t im_search(const char *sps_buf, size_t sps_len);
+size_t im_search(const char* sps_buf, size_t sps_len);
 
 /**
  * Make a delete operation in the current search result, and make research if
@@ -122,7 +122,7 @@ size_t im_add_letter(char ch);
  * string is successfully parsed.
  * @return The spelling string kept by the decoder.
  */
-const char *im_get_sps_str(size_t *decoded_len);
+const char* im_get_sps_str(size_t* decoded_len);
 
 /**
  * Get a candidate(or choice) string.
@@ -133,7 +133,7 @@ const char *im_get_sps_str(size_t *decoded_len);
  * @param max_len The maximum length of the buffer.
  * @return cand_str if succeeds, otherwise NULL.
  */
-char16 *im_get_candidate(size_t cand_id, char16 *cand_str, size_t max_len);
+char16* im_get_candidate(size_t cand_id, char16* cand_str, size_t max_len);
 
 /**
  * Get the segmentation information(the starting positions) of the spelling
@@ -144,7 +144,7 @@ char16 *im_get_candidate(size_t cand_id, char16 *cand_str, size_t max_len);
  * elements in spl_start, and spl_start[L] is the posistion after the end of
  * the last spelling id.
  */
-size_t im_get_spl_start_pos(const uint16 *&spl_start);
+size_t im_get_spl_start_pos(const uint16*& spl_start);
 
 /**
  * Choose a candidate and make it fixed. If the candidate does not match
@@ -187,7 +187,7 @@ bool im_cancel_input();
  * @param pre_buf Used to return prediction result list.
  * @return The number of predicted result string.
  */
-size_t im_get_predicts(const char16 *his_buf, char16 (*&pre_buf)[kMaxPredictSize + 1]);
+size_t im_get_predicts(const char16* his_buf, char16 (*&pre_buf)[kMaxPredictSize + 1]);
 
 /**
  * Enable Shengmus in ShouZiMu mode.

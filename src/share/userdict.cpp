@@ -42,7 +42,7 @@
 namespace ime_pinyin {
 
 #ifdef _WIN32
-static int gettimeofday(struct timeval *tp, void *) {
+static int gettimeofday(struct timeval* tp, void*) {
     if (!tp) {
         return -1;
     }
@@ -101,7 +101,7 @@ static pthread_mutex_t g_mutex_ = PTHREAD_MUTEX_INITIALIZER;
 #endif
 static struct timeval g_last_update_ = {0, 0};
 
-inline uint32 UserDict::get_dict_file_size(UserDictInfo *info) {
+inline uint32 UserDict::get_dict_file_size(UserDictInfo* info) {
     return (4 + info->lemma_size + (info->lemma_count << 3)
 #ifdef ___PREDICT_ENABLED___
             + (info->lemma_count << 2)
@@ -163,12 +163,12 @@ inline int UserDict::build_score(uint64 lmt, int freq) {
     return s;
 }
 
-inline int64 UserDict::utf16le_atoll(uint16 *s, int len) {
+inline int64 UserDict::utf16le_atoll(uint16* s, int len) {
     int64 ret = 0;
     if (len <= 0) return ret;
 
     int flag = 1;
-    const uint16 *endp = s + len;
+    const uint16* endp = s + len;
     if (*s == '-') {
         flag = -1;
         s++;
@@ -183,9 +183,9 @@ inline int64 UserDict::utf16le_atoll(uint16 *s, int len) {
     return ret * flag;
 }
 
-inline int UserDict::utf16le_lltoa(int64 v, uint16 *s, int size) {
+inline int UserDict::utf16le_lltoa(int64 v, uint16* s, int size) {
     if (!s || size <= 0) return 0;
-    uint16 *endp = s + size;
+    uint16* endp = s + size;
     int ret_len = 0;
     if (v < 0) {
         *(s++) = '-';
@@ -193,7 +193,7 @@ inline int UserDict::utf16le_lltoa(int64 v, uint16 *s, int size) {
         v *= -1;
     }
 
-    uint16 *b = s;
+    uint16* b = s;
     while (s < endp && v != 0) {
         *(s++) = '0' + (v % 10);
         v = v / 10;
@@ -227,15 +227,15 @@ inline char UserDict::get_lemma_nchar(uint32 offset) {
     return (char)(lemmas_[offset + 1]);
 }
 
-inline uint16 *UserDict::get_lemma_spell_ids(uint32 offset) {
+inline uint16* UserDict::get_lemma_spell_ids(uint32 offset) {
     offset &= kUserDictOffsetMask;
-    return (uint16 *)(lemmas_ + offset + 2);
+    return (uint16*)(lemmas_ + offset + 2);
 }
 
-inline uint16 *UserDict::get_lemma_word(uint32 offset) {
+inline uint16* UserDict::get_lemma_word(uint32 offset) {
     offset &= kUserDictOffsetMask;
     uint8 nchar = get_lemma_nchar(offset);
-    return (uint16 *)(lemmas_ + offset + 2 + (nchar << 1));
+    return (uint16*)(lemmas_ + offset + 2 + (nchar << 1));
 }
 
 inline LemmaIdType UserDict::get_max_lemma_id() {
@@ -282,7 +282,7 @@ UserDict::UserDict()
 
 UserDict::~UserDict() { close_dict(); }
 
-bool UserDict::load_dict(const char *file_name, LemmaIdType start_id, LemmaIdType end_id) {
+bool UserDict::load_dict(const char* file_name, LemmaIdType start_id, LemmaIdType end_id) {
 #ifdef ___DEBUG_PERF___
     DEBUG_PERF_BEGIN;
 #endif
@@ -308,7 +308,7 @@ bool UserDict::load_dict(const char *file_name, LemmaIdType start_id, LemmaIdTyp
 #endif
     return true;
 error:
-    free((void *)dict_file_);
+    free((void*)dict_file_);
     dict_file_ = NULL;
     start_id_ = 0;
     return false;
@@ -330,7 +330,7 @@ bool UserDict::close_dict() {
     pthread_mutex_unlock(&g_mutex_);
 
 out:
-    free((void *)dict_file_);
+    free((void*)dict_file_);
     free(lemmas_);
     free(offsets_);
     free(offsets_by_id_);
@@ -367,7 +367,7 @@ size_t UserDict::number_of_lemmas() { return dict_info_.lemma_count; }
 
 void UserDict::reset_milestones(uint16 from_step, MileStoneHandle from_handle) { return; }
 
-MileStoneHandle UserDict::extend_dict(MileStoneHandle from_handle, const DictExtPara *dep, LmaPsbItem *lpi_items, size_t lpi_max, size_t *lpi_num) {
+MileStoneHandle UserDict::extend_dict(MileStoneHandle from_handle, const DictExtPara* dep, LmaPsbItem* lpi_items, size_t lpi_max, size_t* lpi_num) {
     if (is_valid_state() == false) return 0;
 
     bool need_extend = false;
@@ -383,10 +383,10 @@ MileStoneHandle UserDict::extend_dict(MileStoneHandle from_handle, const DictExt
     return ((*lpi_num > 0 || need_extend) ? 1 : 0);
 }
 
-int UserDict::is_fuzzy_prefix_spell_id(const uint16 *id1, uint16 len1, const UserDictSearchable *searchable) {
+int UserDict::is_fuzzy_prefix_spell_id(const uint16* id1, uint16 len1, const UserDictSearchable* searchable) {
     if (len1 < searchable->splids_len) return 0;
 
-    SpellingTrie &spl_trie = SpellingTrie::get_instance();
+    SpellingTrie& spl_trie = SpellingTrie::get_instance();
     uint32 i = 0;
     for (i = 0; i < searchable->splids_len; i++) {
         const char py1 = *spl_trie.get_spelling_str(id1[i]);
@@ -398,11 +398,11 @@ int UserDict::is_fuzzy_prefix_spell_id(const uint16 *id1, uint16 len1, const Use
     return 1;
 }
 
-int UserDict::fuzzy_compare_spell_id(const uint16 *id1, uint16 len1, const UserDictSearchable *searchable) {
+int UserDict::fuzzy_compare_spell_id(const uint16* id1, uint16 len1, const UserDictSearchable* searchable) {
     if (len1 < searchable->splids_len) return -1;
     if (len1 > searchable->splids_len) return 1;
 
-    SpellingTrie &spl_trie = SpellingTrie::get_instance();
+    SpellingTrie& spl_trie = SpellingTrie::get_instance();
     uint32 i = 0;
     for (i = 0; i < len1; i++) {
         const char py1 = *spl_trie.get_spelling_str(id1[i]);
@@ -415,7 +415,7 @@ int UserDict::fuzzy_compare_spell_id(const uint16 *id1, uint16 len1, const UserD
     return 0;
 }
 
-bool UserDict::is_prefix_spell_id(const uint16 *fullids, uint16 fulllen, const UserDictSearchable *searchable) {
+bool UserDict::is_prefix_spell_id(const uint16* fullids, uint16 fulllen, const UserDictSearchable* searchable) {
     if (fulllen < searchable->splids_len) return false;
 
     uint32 i = 0;
@@ -430,7 +430,7 @@ bool UserDict::is_prefix_spell_id(const uint16 *fullids, uint16 fulllen, const U
     return true;
 }
 
-bool UserDict::equal_spell_id(const uint16 *fullids, uint16 fulllen, const UserDictSearchable *searchable) {
+bool UserDict::equal_spell_id(const uint16* fullids, uint16 fulllen, const UserDictSearchable* searchable) {
     if (fulllen != searchable->splids_len) return false;
 
     uint32 i = 0;
@@ -445,7 +445,7 @@ bool UserDict::equal_spell_id(const uint16 *fullids, uint16 fulllen, const UserD
     return true;
 }
 
-int32 UserDict::locate_first_in_offsets(const UserDictSearchable *searchable) {
+int32 UserDict::locate_first_in_offsets(const UserDictSearchable* searchable) {
     int32 begin = 0;
     int32 end = dict_info_.lemma_count - 1;
     int32 middle = -1;
@@ -457,7 +457,7 @@ int32 UserDict::locate_first_in_offsets(const UserDictSearchable *searchable) {
         middle = (begin + end) >> 1;
         uint32 offset = offsets_[middle];
         uint8 nchar = get_lemma_nchar(offset);
-        const uint16 *splids = get_lemma_spell_ids(offset);
+        const uint16* splids = get_lemma_spell_ids(offset);
         int cmp = fuzzy_compare_spell_id(splids, nchar, searchable);
         int pre = is_fuzzy_prefix_spell_id(splids, nchar, searchable);
 
@@ -476,11 +476,11 @@ int32 UserDict::locate_first_in_offsets(const UserDictSearchable *searchable) {
     return first_prefix;
 }
 
-void UserDict::prepare_locate(UserDictSearchable *searchable, const uint16 *splid_str, uint16 splid_str_len) {
+void UserDict::prepare_locate(UserDictSearchable* searchable, const uint16* splid_str, uint16 splid_str_len) {
     searchable->splids_len = splid_str_len;
     memset(searchable->signature, 0, sizeof(searchable->signature));
 
-    SpellingTrie &spl_trie = SpellingTrie::get_instance();
+    SpellingTrie& spl_trie = SpellingTrie::get_instance();
     uint32 i = 0;
     for (; i < splid_str_len; i++) {
         if (spl_trie.is_half_id(splid_str[i])) {
@@ -494,9 +494,9 @@ void UserDict::prepare_locate(UserDictSearchable *searchable, const uint16 *spli
     }
 }
 
-size_t UserDict::get_lpis(const uint16 *splid_str, uint16 splid_str_len, LmaPsbItem *lpi_items, size_t lpi_max) { return _get_lpis(splid_str, splid_str_len, lpi_items, lpi_max, NULL); }
+size_t UserDict::get_lpis(const uint16* splid_str, uint16 splid_str_len, LmaPsbItem* lpi_items, size_t lpi_max) { return _get_lpis(splid_str, splid_str_len, lpi_items, lpi_max, NULL); }
 
-size_t UserDict::_get_lpis(const uint16 *splid_str, uint16 splid_str_len, LmaPsbItem *lpi_items, size_t lpi_max, bool *need_extend) {
+size_t UserDict::_get_lpis(const uint16* splid_str, uint16 splid_str_len, LmaPsbItem* lpi_items, size_t lpi_max, bool* need_extend) {
     bool tmp_extend;
     if (!need_extend) need_extend = &tmp_extend;
 
@@ -555,7 +555,7 @@ size_t UserDict::_get_lpis(const uint16 *splid_str, uint16 splid_str_len, LmaPsb
             continue;
         }
         uint8 nchar = get_lemma_nchar(offset);
-        uint16 *splids = get_lemma_spell_ids(offset);
+        uint16* splids = get_lemma_spell_ids(offset);
 #ifdef ___CACHE_ENABLED___
         if (!cached && 0 != fuzzy_compare_spell_id(splids, nchar, &searchable)) {
 #else
@@ -593,12 +593,12 @@ size_t UserDict::_get_lpis(const uint16 *splid_str, uint16 splid_str_len, LmaPsb
     return lpi_current;
 }
 
-uint16 UserDict::get_lemma_str(LemmaIdType id_lemma, char16 *str_buf, uint16 str_max) {
+uint16 UserDict::get_lemma_str(LemmaIdType id_lemma, char16* str_buf, uint16 str_max) {
     if (is_valid_state() == false) return 0;
     if (is_valid_lemma_id(id_lemma) == false) return 0;
     uint32 offset = offsets_by_id_[id_lemma - start_id_];
     uint8 nchar = get_lemma_nchar(offset);
-    char16 *str = get_lemma_word(offset);
+    char16* str = get_lemma_word(offset);
     uint16 m = nchar < str_max - 1 ? nchar : str_max - 1;
     int i = 0;
     for (; i < m; i++) {
@@ -608,21 +608,21 @@ uint16 UserDict::get_lemma_str(LemmaIdType id_lemma, char16 *str_buf, uint16 str
     return m;
 }
 
-uint16 UserDict::get_lemma_splids(LemmaIdType id_lemma, uint16 *splids, uint16 splids_max, bool arg_valid) {
+uint16 UserDict::get_lemma_splids(LemmaIdType id_lemma, uint16* splids, uint16 splids_max, bool arg_valid) {
     if (is_valid_lemma_id(id_lemma) == false) return 0;
     uint32 offset = offsets_by_id_[id_lemma - start_id_];
     uint8 nchar = get_lemma_nchar(offset);
-    const uint16 *ids = get_lemma_spell_ids(offset);
+    const uint16* ids = get_lemma_spell_ids(offset);
     int i = 0;
     for (; i < nchar && i < splids_max; i++) splids[i] = ids[i];
     return i;
 }
 
-size_t UserDict::predict(const char16 last_hzs[], uint16 hzs_len, NPredictItem *npre_items, size_t npre_max, size_t b4_used) {
+size_t UserDict::predict(const char16 last_hzs[], uint16 hzs_len, NPredictItem* npre_items, size_t npre_max, size_t b4_used) {
     uint32 new_added = 0;
 #ifdef ___PREDICT_ENABLED___
     int32 end = dict_info_.lemma_count - 1;
-    int j = locate_first_in_predicts((const uint16 *)last_hzs, hzs_len);
+    int j = locate_first_in_predicts((const uint16*)last_hzs, hzs_len);
     if (j == -1) return 0;
 
     while (j <= end) {
@@ -633,8 +633,8 @@ size_t UserDict::predict(const char16 last_hzs[], uint16 hzs_len, NPredictItem *
             continue;
         }
         uint32 nchar = get_lemma_nchar(offset);
-        uint16 *words = get_lemma_word(offset);
-        uint16 *splids = get_lemma_spell_ids(offset);
+        uint16* words = get_lemma_word(offset);
+        uint16* splids = get_lemma_spell_ids(offset);
 
         if (nchar <= hzs_len) {
             j++;
@@ -693,14 +693,14 @@ int32 UserDict::locate_in_offsets(char16 lemma_str[], uint16 splid_str[], uint16
             off++;
             continue;
         }
-        uint16 *splids = get_lemma_spell_ids(offset);
+        uint16* splids = get_lemma_spell_ids(offset);
 #ifdef ___CACHE_ENABLED___
         if (!cached && 0 != fuzzy_compare_spell_id(splids, lemma_len, &searchable)) break;
 #else
         if (0 != fuzzy_compare_spell_id(splids, lemma_len, &searchable)) break;
 #endif
         if (equal_spell_id(splids, lemma_len, &searchable) == true) {
-            uint16 *str = get_lemma_word(offset);
+            uint16* str = get_lemma_word(offset);
             uint32 i = 0;
             for (i = 0; i < lemma_len; i++) {
                 if (str[i] == lemma_str[i]) continue;
@@ -728,7 +728,7 @@ int32 UserDict::locate_in_offsets(char16 lemma_str[], uint16 splid_str[], uint16
 }
 
 #ifdef ___PREDICT_ENABLED___
-uint32 UserDict::locate_where_to_insert_in_predicts(const uint16 *words, int lemma_len) {
+uint32 UserDict::locate_where_to_insert_in_predicts(const uint16* words, int lemma_len) {
     int32 begin = 0;
     int32 end = dict_info_.lemma_count - 1;
     int32 middle = end;
@@ -739,7 +739,7 @@ uint32 UserDict::locate_where_to_insert_in_predicts(const uint16 *words, int lem
         middle = (begin + end) >> 1;
         uint32 offset = offsets_[middle];
         uint8 nchar = get_lemma_nchar(offset);
-        const uint16 *ws = get_lemma_word(offset);
+        const uint16* ws = get_lemma_word(offset);
 
         uint32 minl = nchar < lemma_len ? nchar : lemma_len;
         uint32 k = 0;
@@ -775,7 +775,7 @@ uint32 UserDict::locate_where_to_insert_in_predicts(const uint16 *words, int lem
     return last_matched;
 }
 
-int32 UserDict::locate_first_in_predicts(const uint16 *words, int lemma_len) {
+int32 UserDict::locate_first_in_predicts(const uint16* words, int lemma_len) {
     int32 begin = 0;
     int32 end = dict_info_.lemma_count - 1;
     int32 middle = -1;
@@ -786,7 +786,7 @@ int32 UserDict::locate_first_in_predicts(const uint16 *words, int lemma_len) {
         middle = (begin + end) >> 1;
         uint32 offset = offsets_[middle];
         uint8 nchar = get_lemma_nchar(offset);
-        const uint16 *ws = get_lemma_word(offset);
+        const uint16* ws = get_lemma_word(offset);
 
         uint32 minl = nchar < lemma_len ? nchar : lemma_len;
         uint32 k = 0;
@@ -851,8 +851,8 @@ int UserDict::_get_lemma_score(LemmaIdType lemma_id) {
     uint32 offset = offsets_by_id_[lemma_id - start_id_];
 
     uint32 nchar = get_lemma_nchar(offset);
-    uint16 *spl = get_lemma_spell_ids(offset);
-    uint16 *wrd = get_lemma_word(offset);
+    uint16* spl = get_lemma_spell_ids(offset);
+    uint16* wrd = get_lemma_word(offset);
 
     int32 off = locate_in_offsets(wrd, spl, nchar);
     if (off == -1) {
@@ -936,8 +936,8 @@ bool UserDict::remove_lemma(LemmaIdType lemma_id) {
     uint32 offset = offsets_by_id_[lemma_id - start_id_];
 
     uint32 nchar = get_lemma_nchar(offset);
-    uint16 *spl = get_lemma_spell_ids(offset);
-    uint16 *wrd = get_lemma_word(offset);
+    uint16* spl = get_lemma_spell_ids(offset);
+    uint16* wrd = get_lemma_word(offset);
 
     int32 off = locate_in_offsets(wrd, spl, nchar);
 
@@ -947,19 +947,19 @@ bool UserDict::remove_lemma(LemmaIdType lemma_id) {
 void UserDict::flush_cache() {
     LemmaIdType start_id = start_id_;
     if (!dict_file_) return;
-    const char *file = strdup(dict_file_);
+    const char* file = strdup(dict_file_);
     if (!file) return;
     close_dict();
     load_dict(file, start_id, kUserDictIdEnd);
-    free((void *)file);
+    free((void*)file);
 #ifdef ___CACHE_ENABLED___
     cache_init();
 #endif
     return;
 }
 
-bool UserDict::reset(const char *file) {
-    FILE *fp = fopen(file, "w+");
+bool UserDict::reset(const char* file) {
+    FILE* fp = fopen(file, "w+");
     if (!fp) {
         return false;
     }
@@ -979,10 +979,10 @@ bool UserDict::reset(const char *file) {
     return true;
 }
 
-bool UserDict::validate(const char *file) {
+bool UserDict::validate(const char* file) {
     // b is ignored in POSIX compatible os including Linux
     // while b is important flag for Windows to specify binary mode
-    FILE *fp = fopen(file, "rb");
+    FILE* fp = fopen(file, "rb");
     if (!fp) {
         return false;
     }
@@ -1038,13 +1038,13 @@ error:
     return false;
 }
 
-bool UserDict::load(const char *file, LemmaIdType start_id) {
+bool UserDict::load(const char* file, LemmaIdType start_id) {
     if (0 != pthread_mutex_trylock(&g_mutex_)) {
         return false;
     }
     // b is ignored in POSIX compatible os including Linux
     // while b is important flag for Windows to specify binary mode
-    FILE *fp = fopen(file, "rb");
+    FILE* fp = fopen(file, "rb");
     if (!fp) {
         pthread_mutex_unlock(&g_mutex_);
         return false;
@@ -1052,16 +1052,16 @@ bool UserDict::load(const char *file, LemmaIdType start_id) {
 
     size_t readed, toread;
     UserDictInfo dict_info;
-    uint8 *lemmas = NULL;
-    uint32 *offsets = NULL;
+    uint8* lemmas = NULL;
+    uint32* offsets = NULL;
 #ifdef ___SYNC_ENABLED___
-    uint32 *syncs = NULL;
+    uint32* syncs = NULL;
 #endif
-    uint32 *scores = NULL;
-    uint32 *ids = NULL;
-    uint32 *offsets_by_id = NULL;
+    uint32* scores = NULL;
+    uint32* ids = NULL;
+    uint32* offsets_by_id = NULL;
 #ifdef ___PREDICT_ENABLED___
-    uint32 *predicts = NULL;
+    uint32* predicts = NULL;
 #endif
     size_t i;
     int err;
@@ -1072,30 +1072,30 @@ bool UserDict::load(const char *file, LemmaIdType start_id) {
     readed = fread(&dict_info, 1, sizeof(dict_info), fp);
     if (readed != sizeof(dict_info)) goto error;
 
-    lemmas = (uint8 *)malloc(dict_info.lemma_size + (kUserDictPreAlloc * (2 + (kUserDictAverageNchar << 2))));
+    lemmas = (uint8*)malloc(dict_info.lemma_size + (kUserDictPreAlloc * (2 + (kUserDictAverageNchar << 2))));
 
     if (!lemmas) goto error;
 
-    offsets = (uint32 *)malloc((dict_info.lemma_count + kUserDictPreAlloc) << 2);
+    offsets = (uint32*)malloc((dict_info.lemma_count + kUserDictPreAlloc) << 2);
     if (!offsets) goto error;
 
 #ifdef ___PREDICT_ENABLED___
-    predicts = (uint32 *)malloc((dict_info.lemma_count + kUserDictPreAlloc) << 2);
+    predicts = (uint32*)malloc((dict_info.lemma_count + kUserDictPreAlloc) << 2);
     if (!predicts) goto error;
 #endif
 
 #ifdef ___SYNC_ENABLED___
-    syncs = (uint32 *)malloc((dict_info.sync_count + kUserDictPreAlloc) << 2);
+    syncs = (uint32*)malloc((dict_info.sync_count + kUserDictPreAlloc) << 2);
     if (!syncs) goto error;
 #endif
 
-    scores = (uint32 *)malloc((dict_info.lemma_count + kUserDictPreAlloc) << 2);
+    scores = (uint32*)malloc((dict_info.lemma_count + kUserDictPreAlloc) << 2);
     if (!scores) goto error;
 
-    ids = (uint32 *)malloc((dict_info.lemma_count + kUserDictPreAlloc) << 2);
+    ids = (uint32*)malloc((dict_info.lemma_count + kUserDictPreAlloc) << 2);
     if (!ids) goto error;
 
-    offsets_by_id = (uint32 *)malloc((dict_info.lemma_count + kUserDictPreAlloc) << 2);
+    offsets_by_id = (uint32*)malloc((dict_info.lemma_count + kUserDictPreAlloc) << 2);
     if (!offsets_by_id) goto error;
 
     err = fseek(fp, 4, SEEK_SET);
@@ -1110,7 +1110,7 @@ bool UserDict::load(const char *file, LemmaIdType start_id) {
     toread = (dict_info.lemma_count << 2);
     readed = 0;
     while (readed < toread && !ferror(fp) && !feof(fp)) {
-        readed += fread((((uint8 *)offsets) + readed), 1, toread - readed, fp);
+        readed += fread((((uint8*)offsets) + readed), 1, toread - readed, fp);
     }
     if (readed < toread) goto error;
 
@@ -1118,14 +1118,14 @@ bool UserDict::load(const char *file, LemmaIdType start_id) {
     toread = (dict_info.lemma_count << 2);
     readed = 0;
     while (readed < toread && !ferror(fp) && !feof(fp)) {
-        readed += fread((((uint8 *)predicts) + readed), 1, toread - readed, fp);
+        readed += fread((((uint8*)predicts) + readed), 1, toread - readed, fp);
     }
     if (readed < toread) goto error;
 #endif
 
     readed = 0;
     while (readed < toread && !ferror(fp) && !feof(fp)) {
-        readed += fread((((uint8 *)scores) + readed), 1, toread - readed, fp);
+        readed += fread((((uint8*)scores) + readed), 1, toread - readed, fp);
     }
     if (readed < toread) goto error;
 
@@ -1133,7 +1133,7 @@ bool UserDict::load(const char *file, LemmaIdType start_id) {
     toread = (dict_info.sync_count << 2);
     readed = 0;
     while (readed < toread && !ferror(fp) && !feof(fp)) {
-        readed += fread((((uint8 *)syncs) + readed), 1, toread - readed, fp);
+        readed += fread((((uint8*)syncs) + readed), 1, toread - readed, fp);
     }
     if (readed < toread) goto error;
 #endif
@@ -1302,8 +1302,8 @@ void UserDict::write_back_all(int fd) {
 }
 
 #ifdef ___CACHE_ENABLED___
-bool UserDict::load_cache(UserDictSearchable *searchable, uint32 *offset, uint32 *length) {
-    UserDictCache *cache = &caches_[searchable->splids_len - 1];
+bool UserDict::load_cache(UserDictSearchable* searchable, uint32* offset, uint32* length) {
+    UserDictCache* cache = &caches_[searchable->splids_len - 1];
     if (cache->head == cache->tail) return false;
 
     uint16 j, sig_len = kMaxLemmaSize / 4;
@@ -1326,8 +1326,8 @@ bool UserDict::load_cache(UserDictSearchable *searchable, uint32 *offset, uint32
     return false;
 }
 
-void UserDict::save_cache(UserDictSearchable *searchable, uint32 offset, uint32 length) {
-    UserDictCache *cache = &caches_[searchable->splids_len - 1];
+void UserDict::save_cache(UserDictSearchable* searchable, uint32 offset, uint32 length) {
+    UserDictCache* cache = &caches_[searchable->splids_len - 1];
     uint16 next = cache->tail;
 
     cache->offsets[next] = offset;
@@ -1352,8 +1352,8 @@ void UserDict::save_cache(UserDictSearchable *searchable, uint32 offset, uint32 
 
 void UserDict::reset_cache() { memset(caches_, 0, sizeof(caches_)); }
 
-bool UserDict::load_miss_cache(UserDictSearchable *searchable) {
-    UserDictMissCache *cache = &miss_caches_[searchable->splids_len - 1];
+bool UserDict::load_miss_cache(UserDictSearchable* searchable) {
+    UserDictMissCache* cache = &miss_caches_[searchable->splids_len - 1];
     if (cache->head == cache->tail) return false;
 
     uint16 j, sig_len = kMaxLemmaSize / 4;
@@ -1374,8 +1374,8 @@ bool UserDict::load_miss_cache(UserDictSearchable *searchable) {
     return false;
 }
 
-void UserDict::save_miss_cache(UserDictSearchable *searchable) {
-    UserDictMissCache *cache = &miss_caches_[searchable->splids_len - 1];
+void UserDict::save_miss_cache(UserDictSearchable* searchable) {
+    UserDictMissCache* cache = &miss_caches_[searchable->splids_len - 1];
     uint16 next = cache->tail;
 
     uint16 sig_len = kMaxLemmaSize / 4;
@@ -1403,7 +1403,7 @@ void UserDict::cache_init() {
     reset_miss_cache();
 }
 
-bool UserDict::cache_hit(UserDictSearchable *searchable, uint32 *offset, uint32 *length) {
+bool UserDict::cache_hit(UserDictSearchable* searchable, uint32* offset, uint32* length) {
     bool hit = load_miss_cache(searchable);
     if (hit) {
         *offset = 0;
@@ -1417,7 +1417,7 @@ bool UserDict::cache_hit(UserDictSearchable *searchable, uint32 *offset, uint32 
     return false;
 }
 
-void UserDict::cache_push(UserDictCacheType type, UserDictSearchable *searchable, uint32 offset, uint32 length) {
+void UserDict::cache_push(UserDictCacheType type, UserDictSearchable* searchable, uint32 offset, uint32 length) {
     switch (type) {
         case USER_DICT_MISS_CACHE:
             save_miss_cache(searchable);
@@ -1614,7 +1614,7 @@ LemmaIdType UserDict::put_lemma_no_sync(char16 lemma_str[], uint16 splids[], uin
     int again = 0;
 begin:
     LemmaIdType id;
-    uint32 *syncs_bak = syncs_;
+    uint32* syncs_bak = syncs_;
     syncs_ = NULL;
     id = _put_lemma(lemma_str, splids, lemma_len, count, lmt);
     syncs_ = syncs_bak;
@@ -1632,26 +1632,26 @@ begin:
     return id;
 }
 
-int UserDict::put_lemmas_no_sync_from_utf16le_string(char16 *lemmas, int len) {
+int UserDict::put_lemmas_no_sync_from_utf16le_string(char16* lemmas, int len) {
     int newly_added = 0;
 
-    SpellingParser *spl_parser = new SpellingParser();
+    SpellingParser* spl_parser = new SpellingParser();
     if (!spl_parser) {
         return 0;
     }
 #ifdef ___DEBUG_PERF___
     DEBUG_PERF_BEGIN;
 #endif
-    char16 *ptr = lemmas;
+    char16* ptr = lemmas;
 
     // Extract pinyin,words,frequence,last_mod_time
     char16 *p = ptr, *py16 = ptr;
-    char16 *hz16 = NULL;
+    char16* hz16 = NULL;
     int py16_len = 0;
     uint16 splid[kMaxLemmaSize];
     int splid_len = 0;
     int hz16_len = 0;
-    char16 *fr16 = NULL;
+    char16* fr16 = NULL;
     int fr16_len = 0;
 
     while (p - ptr < len) {
@@ -1708,7 +1708,7 @@ int UserDict::put_lemmas_no_sync_from_utf16le_string(char16 *lemmas, int len) {
     return newly_added;
 }
 
-int UserDict::get_sync_lemmas_in_utf16le_string_from_beginning(char16 *str, int size, int *count) {
+int UserDict::get_sync_lemmas_in_utf16le_string_from_beginning(char16* str, int size, int* count) {
     int len = 0;
     *count = 0;
 
@@ -1716,7 +1716,7 @@ int UserDict::get_sync_lemmas_in_utf16le_string_from_beginning(char16 *str, int 
 
     if (is_valid_state() == false) return len;
 
-    SpellingTrie *spl_trie = &SpellingTrie::get_instance();
+    SpellingTrie* spl_trie = &SpellingTrie::get_instance();
     if (!spl_trie) {
         return 0;
     }
@@ -1725,8 +1725,8 @@ int UserDict::get_sync_lemmas_in_utf16le_string_from_beginning(char16 *str, int 
     for (i = 0; i < dict_info_.sync_count; i++) {
         int offset = syncs_[i];
         uint32 nchar = get_lemma_nchar(offset);
-        uint16 *spl = get_lemma_spell_ids(offset);
-        uint16 *wrd = get_lemma_word(offset);
+        uint16* spl = get_lemma_spell_ids(offset);
+        uint16* wrd = get_lemma_word(offset);
         int score = _get_lemma_score(wrd, spl, nchar);
 
         static char score_temp[32], *pscore_temp = score_temp;
@@ -1812,7 +1812,7 @@ int UserDict::get_sync_lemmas_in_utf16le_string_from_beginning(char16 *str, int 
 
 #endif
 
-bool UserDict::state(UserDictStat *stat) {
+bool UserDict::state(UserDictStat* stat) {
     if (is_valid_state() == false) return false;
     if (!stat) return false;
     stat->version = version_;
@@ -1862,8 +1862,8 @@ void UserDict::reclaim() {
     uint32 count = dict_info_.lemma_count;
     int rc = count * dict_info_.reclaim_ratio / 100;
 
-    UserDictScoreOffsetPair *score_offset_pairs = NULL;
-    score_offset_pairs = (UserDictScoreOffsetPair *)malloc(sizeof(UserDictScoreOffsetPair) * rc);
+    UserDictScoreOffsetPair* score_offset_pairs = NULL;
+    score_offset_pairs = (UserDictScoreOffsetPair*)malloc(sizeof(UserDictScoreOffsetPair) * rc);
     if (score_offset_pairs == NULL) {
         return;
     }
@@ -1896,7 +1896,7 @@ void UserDict::reclaim() {
     free(score_offset_pairs);
 }
 
-inline void UserDict::swap(UserDictScoreOffsetPair *sop, int i, int j) {
+inline void UserDict::swap(UserDictScoreOffsetPair* sop, int i, int j) {
     int s = sop[i].score;
     int p = sop[i].offset_index;
     sop[i].score = sop[j].score;
@@ -1905,7 +1905,7 @@ inline void UserDict::swap(UserDictScoreOffsetPair *sop, int i, int j) {
     sop[j].offset_index = p;
 }
 
-void UserDict::shift_down(UserDictScoreOffsetPair *sop, int i, int n) {
+void UserDict::shift_down(UserDictScoreOffsetPair* sop, int i, int n) {
     int par = i;
     while (par < n) {
         int left = par * 2 + 1;
@@ -1983,7 +1983,7 @@ void UserDict::queue_lemma_for_sync(LemmaIdType id) {
     if (dict_info_.sync_count < sync_count_size_) {
         syncs_[dict_info_.sync_count++] = offsets_by_id_[id - start_id_];
     } else {
-        uint32 *syncs = (uint32 *)realloc(syncs_, (sync_count_size_ + kUserDictPreAlloc) << 2);
+        uint32* syncs = (uint32*)realloc(syncs_, (sync_count_size_ + kUserDictPreAlloc) << 2);
         if (syncs) {
             sync_count_size_ += kUserDictPreAlloc;
             syncs_ = syncs;
@@ -2001,8 +2001,8 @@ LemmaIdType UserDict::update_lemma(LemmaIdType lemma_id, int16 delta_count, bool
     if (is_valid_lemma_id(lemma_id) == false) return 0;
     uint32 offset = offsets_by_id_[lemma_id - start_id_];
     uint8 lemma_len = get_lemma_nchar(offset);
-    char16 *lemma_str = get_lemma_word(offset);
-    uint16 *splids = get_lemma_spell_ids(offset);
+    char16* lemma_str = get_lemma_word(offset);
+    uint16* splids = get_lemma_spell_ids(offset);
 
     int32 off = locate_in_offsets(lemma_str, splids, lemma_len);
     if (off != -1) {
@@ -2043,8 +2043,8 @@ LemmaIdType UserDict::append_a_lemma(char16 lemma_str[], uint16 splids[], uint16
     lemmas_[offset] = 0;
     lemmas_[offset + 1] = (uint8)lemma_len;
     for (size_t i = 0; i < lemma_len; i++) {
-        *((uint16 *)&lemmas_[offset + 2 + (i << 1)]) = splids[i];
-        *((char16 *)&lemmas_[offset + 2 + (lemma_len << 1) + (i << 1)]) = lemma_str[i];
+        *((uint16*)&lemmas_[offset + 2 + (i << 1)]) = splids[i];
+        *((char16*)&lemmas_[offset + 2 + (lemma_len << 1) + (i << 1)]) = lemma_str[i];
     }
     uint32 off = dict_info_.lemma_count;
     offsets_[off] = offset;
@@ -2070,7 +2070,7 @@ LemmaIdType UserDict::append_a_lemma(char16 lemma_str[], uint16 splids[], uint16
     while (i < off) {
         offset = offsets_[i];
         uint32 nchar = get_lemma_nchar(offset);
-        uint16 *spl = get_lemma_spell_ids(offset);
+        uint16* spl = get_lemma_spell_ids(offset);
 
         if (0 <= fuzzy_compare_spell_id(spl, nchar, &searchable)) break;
         i++;
@@ -2091,7 +2091,7 @@ LemmaIdType UserDict::append_a_lemma(char16 lemma_str[], uint16 splids[], uint16
 
 #ifdef ___PREDICT_ENABLED___
     uint32 j = 0;
-    uint16 *words_new = get_lemma_word(predicts_[off]);
+    uint16* words_new = get_lemma_word(predicts_[off]);
     j = locate_where_to_insert_in_predicts(words_new, lemma_len);
     if (j != off) {
         uint32 temp = predicts_[off];

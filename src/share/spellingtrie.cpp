@@ -27,7 +27,7 @@
 
 namespace ime_pinyin {
 
-SpellingTrie *SpellingTrie::instance_ = NULL;
+SpellingTrie* SpellingTrie::instance_ = NULL;
 
 // z/c/s is for Zh/Ch/Sh
 const char SpellingTrie::kHalfId2Sc_[kFullSplIdStart + 1] = "0ABCcDEFGHIJKLMNOPQRSsTUVWXYZz";
@@ -45,7 +45,7 @@ unsigned char SpellingTrie::char_flags_[] = {
     // u    v     w      x     y     z
     0x00, 0x00, 0x01, 0x01, 0x01, 0x01};
 
-int compare_spl(const void *p1, const void *p2) { return strcmp((const char *)(p1), (const char *)(p2)); }
+int compare_spl(const void* p1, const void* p2) { return strcmp((const char*)(p1), (const char*)(p2)); }
 
 SpellingTrie::SpellingTrie() {
     spelling_buf_ = NULL;
@@ -101,7 +101,7 @@ SpellingTrie::~SpellingTrie() {
     if (NULL != f2h_) delete[] f2h_;
 }
 
-bool SpellingTrie::if_valid_id_update(uint16 *splid) const {
+bool SpellingTrie::if_valid_id_update(uint16* splid) const {
     if (NULL == splid || 0 == *splid) return false;
 
     if (*splid >= kFullSplIdStart) return true;
@@ -193,9 +193,9 @@ void SpellingTrie::szm_enable_ym(bool enable) {
 
 bool SpellingTrie::is_szm_enabled(char ch) const { return char_flags_[ch - 'A'] & kHalfIdSzmMask; }
 
-const SpellingTrie *SpellingTrie::get_cpinstance() { return &get_instance(); }
+const SpellingTrie* SpellingTrie::get_cpinstance() { return &get_instance(); }
 
-SpellingTrie &SpellingTrie::get_instance() {
+SpellingTrie& SpellingTrie::get_instance() {
     if (NULL == instance_) instance_ = new SpellingTrie();
 
     return *instance_;
@@ -206,7 +206,7 @@ uint16 SpellingTrie::half2full_num(uint16 half_id) const {
     return h2f_num_[half_id];
 }
 
-uint16 SpellingTrie::half_to_full(uint16 half_id, uint16 *spl_id_start) const {
+uint16 SpellingTrie::half_to_full(uint16 half_id, uint16* spl_id_start) const {
     if (NULL == spl_id_start || NULL == root_ || half_id >= kFullSplIdStart) return 0;
 
     *spl_id_start = h2f_start_[half_id];
@@ -219,7 +219,7 @@ uint16 SpellingTrie::full_to_half(uint16 full_id) const {
     return f2h_[full_id - kFullSplIdStart];
 }
 
-void SpellingTrie::free_son_trie(SpellingNode *node) {
+void SpellingTrie::free_son_trie(SpellingNode* node) {
     if (NULL == node) return;
 
     for (size_t pos = 0; pos < node->num_of_son; pos++) {
@@ -229,7 +229,7 @@ void SpellingTrie::free_son_trie(SpellingNode *node) {
     if (NULL != node->first_son) delete[] node->first_son;
 }
 
-bool SpellingTrie::construct(const char *spelling_arr, size_t item_size, size_t item_num, float score_amplifier, unsigned char average_score) {
+bool SpellingTrie::construct(const char* spelling_arr, size_t item_size, size_t item_num, float score_amplifier, unsigned char average_score) {
     if (spelling_arr == NULL) return false;
 
     memset(h2f_start_, 0, sizeof(uint16) * kFullSplIdStart);
@@ -277,7 +277,7 @@ bool SpellingTrie::construct(const char *spelling_arr, size_t item_size, size_t 
     memset(splitter_node_, 0, sizeof(SpellingNode));
     splitter_node_->score = average_score_;
 
-    memset(level1_sons_, 0, sizeof(SpellingNode *) * kValidSplCharNum);
+    memset(level1_sons_, 0, sizeof(SpellingNode*) * kValidSplCharNum);
 
     root_->first_son = construct_spellings_subset(0, spelling_num_, 0, root_);
 
@@ -301,7 +301,7 @@ bool SpellingTrie::construct(const char *spelling_arr, size_t item_size, size_t 
 }
 
 #ifdef ___BUILD_MODEL___
-const char *SpellingTrie::get_ym_str(const char *spl_str) {
+const char* SpellingTrie::get_ym_str(const char* spl_str) {
     bool start_ZCS = false;
     if (is_shengmu_char(*spl_str)) {
         if ('Z' == *spl_str || 'C' == *spl_str || 'S' == *spl_str) start_ZCS = true;
@@ -313,13 +313,13 @@ const char *SpellingTrie::get_ym_str(const char *spl_str) {
 
 bool SpellingTrie::build_ym_info() {
     bool sucess;
-    SpellingTable *spl_table = new SpellingTable();
+    SpellingTable* spl_table = new SpellingTable();
 
     sucess = spl_table->init_table(kMaxPinyinSize - 1, 2 * kMaxYmNum, false);
     assert(sucess);
 
     for (uint16 pos = 0; pos < spelling_num_; pos++) {
-        const char *spl_str = spelling_buf_ + spelling_size_ * pos;
+        const char* spl_str = spelling_buf_ + spelling_size_ * pos;
         spl_str = get_ym_str(spl_str);
         if ('\0' != spl_str[0]) {
             sucess = spl_table->put_spelling(spl_str, 0);
@@ -329,7 +329,7 @@ bool SpellingTrie::build_ym_info() {
 
     size_t ym_item_size;  // '\0' is included
     size_t ym_num;
-    const char *ym_buf;
+    const char* ym_buf;
     ym_buf = spl_table->arrange(&ym_item_size, &ym_num);
 
     if (NULL != ym_buf_) delete[] ym_buf_;
@@ -353,7 +353,7 @@ bool SpellingTrie::build_ym_info() {
     memset(spl_ym_ids_, 0, sizeof(uint8) * (spelling_num_ + kFullSplIdStart));
 
     for (uint16 id = 1; id < spelling_num_ + kFullSplIdStart; id++) {
-        const char *str = get_spelling_str(id);
+        const char* str = get_spelling_str(id);
 
         str = get_ym_str(str);
         if ('\0' != str[0]) {
@@ -368,20 +368,20 @@ bool SpellingTrie::build_ym_info() {
 }
 #endif
 
-SpellingNode *SpellingTrie::construct_spellings_subset(size_t item_start, size_t item_end, size_t level, SpellingNode *parent) {
+SpellingNode* SpellingTrie::construct_spellings_subset(size_t item_start, size_t item_end, size_t level, SpellingNode* parent) {
     if (level >= spelling_size_ || item_end <= item_start || NULL == parent) return NULL;
 
-    SpellingNode *first_son = NULL;
+    SpellingNode* first_son = NULL;
     uint16 num_of_son = 0;
     unsigned char min_son_score = 255;
 
-    const char *spelling_last_start = spelling_buf_ + spelling_size_ * item_start;
+    const char* spelling_last_start = spelling_buf_ + spelling_size_ * item_start;
     char char_for_node = spelling_last_start[level];
     assert(char_for_node >= 'A' && char_for_node <= 'Z' || 'h' == char_for_node);
 
     // Scan the array to find how many sons
     for (size_t i = item_start + 1; i < item_end; i++) {
-        const char *spelling_current = spelling_buf_ + spelling_size_ * i;
+        const char* spelling_current = spelling_buf_ + spelling_size_ * i;
         char char_current = spelling_current[level];
         if (char_current != char_for_node) {
             num_of_son++;
@@ -409,13 +409,13 @@ SpellingNode *SpellingTrie::construct_spellings_subset(size_t item_start, size_t
     size_t item_start_next = item_start;
 
     for (size_t i = item_start + 1; i < item_end; i++) {
-        const char *spelling_current = spelling_buf_ + spelling_size_ * i;
+        const char* spelling_current = spelling_buf_ + spelling_size_ * i;
         char char_current = spelling_current[level];
         assert(is_valid_spl_char(char_current));
 
         if (char_current != char_for_node) {
             // Construct a node
-            SpellingNode *node_current = first_son + son_pos;
+            SpellingNode* node_current = first_son + son_pos;
             node_current->char_this_node = char_for_node;
 
             // For quick search in the first level
@@ -486,7 +486,7 @@ SpellingNode *SpellingTrie::construct_spellings_subset(size_t item_start, size_t
     }
 
     // the last one
-    SpellingNode *node_current = first_son + son_pos;
+    SpellingNode* node_current = first_son + son_pos;
     node_current->char_this_node = char_for_node;
 
     // For quick search in the first level
@@ -551,7 +551,7 @@ SpellingNode *SpellingTrie::construct_spellings_subset(size_t item_start, size_t
     return first_son;
 }
 
-bool SpellingTrie::save_spl_trie(FILE *fp) {
+bool SpellingTrie::save_spl_trie(FILE* fp) {
     if (NULL == fp || NULL == spelling_buf_) return false;
 
     if (fwrite(&spelling_size_, sizeof(uint32), 1, fp) != 1) return false;
@@ -567,7 +567,7 @@ bool SpellingTrie::save_spl_trie(FILE *fp) {
     return true;
 }
 
-bool SpellingTrie::load_spl_trie(FILE *fp) {
+bool SpellingTrie::load_spl_trie(FILE* fp) {
     if (NULL == fp) return false;
 
     if (fread(&spelling_size_, sizeof(uint32), 1, fp) != 1) return false;
@@ -602,7 +602,7 @@ bool SpellingTrie::build_f2h() {
 
 size_t SpellingTrie::get_spelling_num() { return spelling_num_; }
 
-uint8 SpellingTrie::get_ym_id(const char *ym_str) {
+uint8 SpellingTrie::get_ym_id(const char* ym_str) {
     if (NULL == ym_str || NULL == ym_buf_) return 0;
 
     for (uint8 pos = 0; pos < ym_num_; pos++)
@@ -611,7 +611,7 @@ uint8 SpellingTrie::get_ym_id(const char *ym_str) {
     return 0;
 }
 
-const char *SpellingTrie::get_spelling_str(uint16 splid) {
+const char* SpellingTrie::get_spelling_str(uint16 splid) {
     splstr_queried_[0] = '\0';
 
     if (splid >= kFullSplIdStart) {
@@ -634,7 +634,7 @@ const char *SpellingTrie::get_spelling_str(uint16 splid) {
     return splstr_queried_;
 }
 
-const char16 *SpellingTrie::get_spelling_str16(uint16 splid) {
+const char16* SpellingTrie::get_spelling_str16(uint16 splid) {
     splstr16_queried_[0] = '\0';
 
     if (splid >= kFullSplIdStart) {
@@ -665,7 +665,7 @@ const char16 *SpellingTrie::get_spelling_str16(uint16 splid) {
     return splstr16_queried_;
 }
 
-size_t SpellingTrie::get_spelling_str16(uint16 splid, char16 *splstr16, size_t splstr16_len) {
+size_t SpellingTrie::get_spelling_str16(uint16 splid, char16* splstr16, size_t splstr16_len) {
     if (NULL == splstr16 || splstr16_len < kMaxPinyinSize + 1) return 0;
 
     if (splid >= kFullSplIdStart) {

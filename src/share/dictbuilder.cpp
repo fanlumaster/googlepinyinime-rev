@@ -38,10 +38,10 @@ static const size_t kSplTableHashLen = 2000;
 
 // Compare a SingleCharItem, first by Hanzis, then by spelling ids, then by
 // frequencies.
-int cmp_scis_hz_splid_freq(const void *p1, const void *p2) {
+int cmp_scis_hz_splid_freq(const void* p1, const void* p2) {
     const SingleCharItem *s1, *s2;
-    s1 = static_cast<const SingleCharItem *>(p1);
-    s2 = static_cast<const SingleCharItem *>(p2);
+    s1 = static_cast<const SingleCharItem*>(p1);
+    s2 = static_cast<const SingleCharItem*>(p2);
 
     if (s1->hz < s2->hz) return -1;
     if (s1->hz > s2->hz) return 1;
@@ -57,10 +57,10 @@ int cmp_scis_hz_splid_freq(const void *p1, const void *p2) {
     return 0;
 }
 
-int cmp_scis_hz_splid(const void *p1, const void *p2) {
+int cmp_scis_hz_splid(const void* p1, const void* p2) {
     const SingleCharItem *s1, *s2;
-    s1 = static_cast<const SingleCharItem *>(p1);
-    s2 = static_cast<const SingleCharItem *>(p2);
+    s1 = static_cast<const SingleCharItem*>(p1);
+    s2 = static_cast<const SingleCharItem*>(p2);
 
     if (s1->hz < s2->hz) return -1;
     if (s1->hz > s2->hz) return 1;
@@ -74,49 +74,49 @@ int cmp_scis_hz_splid(const void *p1, const void *p2) {
     return 0;
 }
 
-int cmp_lemma_entry_hzs(const void *p1, const void *p2) {
-    size_t size1 = utf16_strlen(((const LemmaEntry *)p1)->hanzi_str);
-    size_t size2 = utf16_strlen(((const LemmaEntry *)p2)->hanzi_str);
+int cmp_lemma_entry_hzs(const void* p1, const void* p2) {
+    size_t size1 = utf16_strlen(((const LemmaEntry*)p1)->hanzi_str);
+    size_t size2 = utf16_strlen(((const LemmaEntry*)p2)->hanzi_str);
     if (size1 < size2)
         return -1;
     else if (size1 > size2)
         return 1;
 
-    return utf16_strcmp(((const LemmaEntry *)p1)->hanzi_str, ((const LemmaEntry *)p2)->hanzi_str);
+    return utf16_strcmp(((const LemmaEntry*)p1)->hanzi_str, ((const LemmaEntry*)p2)->hanzi_str);
 }
 
-int compare_char16(const void *p1, const void *p2) {
-    if (*((const char16 *)p1) < *((const char16 *)p2)) return -1;
-    if (*((const char16 *)p1) > *((const char16 *)p2)) return 1;
+int compare_char16(const void* p1, const void* p2) {
+    if (*((const char16*)p1) < *((const char16*)p2)) return -1;
+    if (*((const char16*)p1) > *((const char16*)p2)) return 1;
     return 0;
 }
 
-int compare_py(const void *p1, const void *p2) {
-    int ret = utf16_strcmp(((const LemmaEntry *)p1)->spl_idx_arr, ((const LemmaEntry *)p2)->spl_idx_arr);
+int compare_py(const void* p1, const void* p2) {
+    int ret = utf16_strcmp(((const LemmaEntry*)p1)->spl_idx_arr, ((const LemmaEntry*)p2)->spl_idx_arr);
 
     if (0 != ret) return ret;
 
-    return static_cast<int>(((const LemmaEntry *)p2)->freq) - static_cast<int>(((const LemmaEntry *)p1)->freq);
+    return static_cast<int>(((const LemmaEntry*)p2)->freq) - static_cast<int>(((const LemmaEntry*)p1)->freq);
 }
 
 // First hanzi, if the same, then Pinyin
-int cmp_lemma_entry_hzspys(const void *p1, const void *p2) {
-    size_t size1 = utf16_strlen(((const LemmaEntry *)p1)->hanzi_str);
-    size_t size2 = utf16_strlen(((const LemmaEntry *)p2)->hanzi_str);
+int cmp_lemma_entry_hzspys(const void* p1, const void* p2) {
+    size_t size1 = utf16_strlen(((const LemmaEntry*)p1)->hanzi_str);
+    size_t size2 = utf16_strlen(((const LemmaEntry*)p2)->hanzi_str);
     if (size1 < size2)
         return -1;
     else if (size1 > size2)
         return 1;
-    int ret = utf16_strcmp(((const LemmaEntry *)p1)->hanzi_str, ((const LemmaEntry *)p2)->hanzi_str);
+    int ret = utf16_strcmp(((const LemmaEntry*)p1)->hanzi_str, ((const LemmaEntry*)p2)->hanzi_str);
 
     if (0 != ret) return ret;
 
-    ret = utf16_strcmp(((const LemmaEntry *)p1)->spl_idx_arr, ((const LemmaEntry *)p2)->spl_idx_arr);
+    ret = utf16_strcmp(((const LemmaEntry*)p1)->spl_idx_arr, ((const LemmaEntry*)p2)->spl_idx_arr);
     return ret;
 }
 
-int compare_splid2(const void *p1, const void *p2) {
-    int ret = utf16_strcmp(((const LemmaEntry *)p1)->spl_idx_arr, ((const LemmaEntry *)p2)->spl_idx_arr);
+int compare_splid2(const void* p1, const void* p2) {
+    int ret = utf16_strcmp(((const LemmaEntry*)p1)->spl_idx_arr, ((const LemmaEntry*)p2)->spl_idx_arr);
     return ret;
 }
 
@@ -188,11 +188,11 @@ bool DictBuilder::alloc_resource(size_t lma_num) {
     return true;
 }
 
-char16 *DictBuilder::read_valid_hanzis(const char *fn_validhzs, size_t *num) {
+char16* DictBuilder::read_valid_hanzis(const char* fn_validhzs, size_t* num) {
     if (NULL == fn_validhzs || NULL == num) return NULL;
 
     *num = 0;
-    FILE *fp = fopen(fn_validhzs, "rb");
+    FILE* fp = fopen(fn_validhzs, "rb");
     if (NULL == fp) return NULL;
 
     char16 utf16header;
@@ -206,7 +206,7 @@ char16 *DictBuilder::read_valid_hanzis(const char *fn_validhzs, size_t *num) {
     assert(*num >= 1);
     *num -= 1;
 
-    char16 *hzs = new char16[*num];
+    char16* hzs = new char16[*num];
     if (NULL == hzs) {
         fclose(fp);
         return NULL;
@@ -225,11 +225,11 @@ char16 *DictBuilder::read_valid_hanzis(const char *fn_validhzs, size_t *num) {
     return hzs;
 }
 
-bool DictBuilder::hz_in_hanzis_list(const char16 *hzs, size_t hzs_len, char16 hz) {
+bool DictBuilder::hz_in_hanzis_list(const char16* hzs, size_t hzs_len, char16 hz) {
     if (NULL == hzs) return false;
 
-    char16 *found;
-    found = static_cast<char16 *>(mybsearch(&hz, hzs, hzs_len, sizeof(char16), compare_char16));
+    char16* found;
+    found = static_cast<char16*>(mybsearch(&hz, hzs, hzs_len, sizeof(char16), compare_char16));
     if (NULL == found) return false;
 
     assert(*found == hz);
@@ -237,7 +237,7 @@ bool DictBuilder::hz_in_hanzis_list(const char16 *hzs, size_t hzs_len, char16 hz
 }
 
 // The caller makes sure that the parameters are valid.
-bool DictBuilder::str_in_hanzis_list(const char16 *hzs, size_t hzs_len, const char16 *str, size_t str_len) {
+bool DictBuilder::str_in_hanzis_list(const char16* hzs, size_t hzs_len, const char16* str, size_t str_len) {
     if (NULL == hzs || NULL == str) return false;
 
     for (size_t pos = 0; pos < str_len; pos++) {
@@ -313,7 +313,7 @@ void DictBuilder::free_resource() {
     homo_idx_num_gt1_ = 0;
 }
 
-size_t DictBuilder::read_raw_dict(const char *fn_raw, const char *fn_validhzs, size_t max_item) {
+size_t DictBuilder::read_raw_dict(const char* fn_raw, const char* fn_validhzs, size_t max_item) {
     if (NULL == fn_raw) return 0;
 
     Utf16Reader utf16_reader;
@@ -330,7 +330,7 @@ size_t DictBuilder::read_raw_dict(const char *fn_raw, const char *fn_validhzs, s
     }
 
     // Read the valid Hanzi list.
-    char16 *valid_hzs = NULL;
+    char16* valid_hzs = NULL;
     size_t valid_hzs_num = 0;
     valid_hzs = read_valid_hanzis(fn_validhzs, &valid_hzs_num);
 
@@ -343,8 +343,8 @@ size_t DictBuilder::read_raw_dict(const char *fn_raw, const char *fn_validhzs, s
         }
 
         size_t token_size;
-        char16 *token;
-        char16 *to_tokenize = read_buf;
+        char16* token;
+        char16* to_tokenize = read_buf;
 
         // Get the Hanzi string
         token = utf16_strtok(to_tokenize, &token_size, &to_tokenize);
@@ -443,7 +443,7 @@ size_t DictBuilder::read_raw_dict(const char *fn_raw, const char *fn_validhzs, s
     return lemma_num;
 }
 
-bool DictBuilder::build_dict(const char *fn_raw, const char *fn_validhzs, DictTrie *dict_trie) {
+bool DictBuilder::build_dict(const char* fn_raw, const char* fn_validhzs, DictTrie* dict_trie) {
     if (NULL == fn_raw || NULL == dict_trie) return false;
 
     lemma_num_ = read_raw_dict(fn_raw, fn_validhzs, 240000);
@@ -455,14 +455,14 @@ bool DictBuilder::build_dict(const char *fn_raw, const char *fn_validhzs, DictTr
     // spelling string will be score, and it is also included in spl_item_size.
     size_t spl_item_size;
     size_t spl_num;
-    const char *spl_buf;
+    const char* spl_buf;
     spl_buf = spl_table_->arrange(&spl_item_size, &spl_num);
     if (NULL == spl_buf) {
         free_resource();
         return false;
     }
 
-    SpellingTrie &spl_trie = SpellingTrie::get_instance();
+    SpellingTrie& spl_trie = SpellingTrie::get_instance();
 
     if (!spl_trie.construct(spl_buf, spl_item_size, spl_num, spl_table_->get_score_amplifier(), spl_table_->get_average_score())) {
         free_resource();
@@ -500,7 +500,7 @@ bool DictBuilder::build_dict(const char *fn_raw, const char *fn_validhzs, DictTr
     assert(dl_success);
 
     // Construct the NGram information
-    NGram &ngram = NGram::get_instance();
+    NGram& ngram = NGram::get_instance();
     ngram.build_unigram(lemma_arr_, lemma_num_, lemma_arr_[lemma_num_ - 1].idx_by_hz + 1);
 
     // sort the lemma items according to the spelling idx string
@@ -513,7 +513,7 @@ bool DictBuilder::build_dict(const char *fn_raw, const char *fn_validhzs, DictTr
 #endif
 
     lma_nds_used_num_le0_ = 1;  // The root node
-    bool dt_success = construct_subset(static_cast<void *>(lma_nodes_le0_), lemma_arr_, 0, lemma_num_, 0);
+    bool dt_success = construct_subset(static_cast<void*>(lma_nodes_le0_), lemma_arr_, 0, lemma_num_, 0);
     if (!dt_success) {
         free_resource();
         return false;
@@ -561,19 +561,19 @@ bool DictBuilder::build_dict(const char *fn_raw, const char *fn_validhzs, DictTr
     return dt_success;
 }
 
-void DictBuilder::id_to_charbuf(unsigned char *buf, LemmaIdType id) {
+void DictBuilder::id_to_charbuf(unsigned char* buf, LemmaIdType id) {
     if (NULL == buf) return;
     for (size_t pos = 0; pos < kLemmaIdSize; pos++) {
         (buf)[pos] = (unsigned char)(id >> (pos * 8));
     }
 }
 
-void DictBuilder::set_son_offset(LmaNodeGE1 *node, size_t offset) {
+void DictBuilder::set_son_offset(LmaNodeGE1* node, size_t offset) {
     node->son_1st_off_l = static_cast<uint16>(offset);
     node->son_1st_off_h = static_cast<unsigned char>(offset >> 16);
 }
 
-void DictBuilder::set_homo_id_buf_offset(LmaNodeGE1 *node, size_t offset) {
+void DictBuilder::set_homo_id_buf_offset(LmaNodeGE1* node, size_t offset) {
     node->homo_idx_buf_off_l = static_cast<uint16>(offset);
     node->homo_idx_buf_off_h = static_cast<unsigned char>(offset >> 16);
 }
@@ -581,7 +581,7 @@ void DictBuilder::set_homo_id_buf_offset(LmaNodeGE1 *node, size_t offset) {
 // All spelling strings will be converted to upper case, except that
 // spellings started with "ZH"/"CH"/"SH" will be converted to
 // "Zh"/"Ch"/"Sh"
-void DictBuilder::format_spelling_str(char *spl_str) {
+void DictBuilder::format_spelling_str(char* spl_str) {
     if (NULL == spl_str) return;
 
     uint16 pos = 0;
@@ -619,7 +619,7 @@ LemmaIdType DictBuilder::sort_lemmas_by_hz() {
 size_t DictBuilder::build_scis() {
     if (NULL == scis_ || lemma_num_ * kMaxLemmaSize > scis_num_) return 0;
 
-    SpellingTrie &spl_trie = SpellingTrie::get_instance();
+    SpellingTrie& spl_trie = SpellingTrie::get_instance();
 
     // This first one is blank, because id 0 is invalid.
     scis_[0].freq = 0;
@@ -665,8 +665,8 @@ size_t DictBuilder::build_scis() {
             key.splid.full_splid = lemma_arr_[pos].spl_idx_arr[hzpos];
             key.splid.half_splid = spl_trie.full_to_half(key.splid.full_splid);
 
-            SingleCharItem *found;
-            found = static_cast<SingleCharItem *>(mybsearch(&key, scis_, unique_scis_num, sizeof(SingleCharItem), cmp_scis_hz_splid));
+            SingleCharItem* found;
+            found = static_cast<SingleCharItem*>(mybsearch(&key, scis_, unique_scis_num, sizeof(SingleCharItem), cmp_scis_hz_splid));
 
             assert(found);
 
@@ -678,7 +678,7 @@ size_t DictBuilder::build_scis() {
     return scis_num_;
 }
 
-bool DictBuilder::construct_subset(void *parent, LemmaEntry *lemma_arr, size_t item_start, size_t item_end, size_t level) {
+bool DictBuilder::construct_subset(void* parent, LemmaEntry* lemma_arr, size_t item_start, size_t item_end, size_t level) {
     if (level >= kMaxLemmaSize || item_end <= item_start) return false;
 
     // 1. Scan for how many sons
@@ -686,12 +686,12 @@ bool DictBuilder::construct_subset(void *parent, LemmaEntry *lemma_arr, size_t i
     // LemmaNode *son_1st = NULL;
     // parent.num_of_son = 0;
 
-    LemmaEntry *lma_last_start = lemma_arr_ + item_start;
+    LemmaEntry* lma_last_start = lemma_arr_ + item_start;
     uint16 spl_idx_node = lma_last_start->spl_idx_arr[level];
 
     // Scan for how many sons to be allocaed
     for (size_t i = item_start + 1; i < item_end; i++) {
-        LemmaEntry *lma_current = lemma_arr + i;
+        LemmaEntry* lma_current = lemma_arr + i;
         uint16 spl_idx_current = lma_current->spl_idx_arr[level];
         if (spl_idx_current != spl_idx_node) {
             parent_son_num++;
@@ -719,29 +719,29 @@ bool DictBuilder::construct_subset(void *parent, LemmaEntry *lemma_arr, size_t i
 
     // 2. Update the parent's information
     //    Update the parent's son list;
-    LmaNodeLE0 *son_1st_le0 = NULL;  // only one of le0 or ge1 is used
-    LmaNodeGE1 *son_1st_ge1 = NULL;  // only one of le0 or ge1 is used.
+    LmaNodeLE0* son_1st_le0 = NULL;  // only one of le0 or ge1 is used
+    LmaNodeGE1* son_1st_ge1 = NULL;  // only one of le0 or ge1 is used.
     if (0 == level) {                // the parent is root
-        (static_cast<LmaNodeLE0 *>(parent))->son_1st_off = lma_nds_used_num_le0_;
+        (static_cast<LmaNodeLE0*>(parent))->son_1st_off = lma_nds_used_num_le0_;
         son_1st_le0 = lma_nodes_le0_ + lma_nds_used_num_le0_;
         lma_nds_used_num_le0_ += parent_son_num;
 
         assert(parent_son_num <= 65535);
-        (static_cast<LmaNodeLE0 *>(parent))->num_of_son = static_cast<uint16>(parent_son_num);
+        (static_cast<LmaNodeLE0*>(parent))->num_of_son = static_cast<uint16>(parent_son_num);
     } else if (1 == level) {  // the parent is a son of root
-        (static_cast<LmaNodeLE0 *>(parent))->son_1st_off = lma_nds_used_num_ge1_;
+        (static_cast<LmaNodeLE0*>(parent))->son_1st_off = lma_nds_used_num_ge1_;
         son_1st_ge1 = lma_nodes_ge1_ + lma_nds_used_num_ge1_;
         lma_nds_used_num_ge1_ += parent_son_num;
 
         assert(parent_son_num <= 65535);
-        (static_cast<LmaNodeLE0 *>(parent))->num_of_son = static_cast<uint16>(parent_son_num);
+        (static_cast<LmaNodeLE0*>(parent))->num_of_son = static_cast<uint16>(parent_son_num);
     } else {
-        set_son_offset((static_cast<LmaNodeGE1 *>(parent)), lma_nds_used_num_ge1_);
+        set_son_offset((static_cast<LmaNodeGE1*>(parent)), lma_nds_used_num_ge1_);
         son_1st_ge1 = lma_nodes_ge1_ + lma_nds_used_num_ge1_;
         lma_nds_used_num_ge1_ += parent_son_num;
 
         assert(parent_son_num <= 255);
-        (static_cast<LmaNodeGE1 *>(parent))->num_of_son = (unsigned char)parent_son_num;
+        (static_cast<LmaNodeGE1*>(parent))->num_of_son = (unsigned char)parent_son_num;
     }
 
     // 3. Now begin to construct the son one by one
@@ -756,15 +756,15 @@ bool DictBuilder::construct_subset(void *parent, LemmaEntry *lemma_arr, size_t i
     size_t item_start_next = item_start;
 
     for (size_t i = item_start + 1; i < item_end; i++) {
-        LemmaEntry *lma_current = lemma_arr_ + i;
+        LemmaEntry* lma_current = lemma_arr_ + i;
         uint16 spl_idx_current = lma_current->spl_idx_arr[level];
 
         if (spl_idx_current == spl_idx_node) {
             if (lma_current->spl_idx_arr[level + 1] == 0) homo_num++;
         } else {
             // Construct a node
-            LmaNodeLE0 *node_cur_le0 = NULL;  // only one of them is valid
-            LmaNodeGE1 *node_cur_ge1 = NULL;
+            LmaNodeLE0* node_cur_le0 = NULL;  // only one of them is valid
+            LmaNodeGE1* node_cur_ge1 = NULL;
             if (0 == level) {
                 node_cur_le0 = son_1st_le0 + son_pos;
                 node_cur_le0->spl_idx = spl_idx_node;
@@ -781,7 +781,7 @@ bool DictBuilder::construct_subset(void *parent, LemmaEntry *lemma_arr, size_t i
             }
 
             if (homo_num > 0) {
-                LemmaIdType *idx_buf = homo_idx_buf_ + homo_idx_num_eq1_ + homo_idx_num_gt1_ - homo_num;
+                LemmaIdType* idx_buf = homo_idx_buf_ + homo_idx_num_eq1_ + homo_idx_num_gt1_ - homo_num;
                 if (0 == level) {
                     assert(homo_num <= 65535);
                     node_cur_le0->num_of_homo = static_cast<uint16>(homo_num);
@@ -802,11 +802,11 @@ bool DictBuilder::construct_subset(void *parent, LemmaEntry *lemma_arr, size_t i
             }
 
             if (i - item_start_next > homo_num) {
-                void *next_parent;
+                void* next_parent;
                 if (0 == level)
-                    next_parent = static_cast<void *>(node_cur_le0);
+                    next_parent = static_cast<void*>(node_cur_le0);
                 else
-                    next_parent = static_cast<void *>(node_cur_ge1);
+                    next_parent = static_cast<void*>(node_cur_ge1);
                 construct_subset(next_parent, lemma_arr, item_start_next + homo_num, i, level + 1);
 #ifdef ___DO_STATISTICS___
 
@@ -827,8 +827,8 @@ bool DictBuilder::construct_subset(void *parent, LemmaEntry *lemma_arr, size_t i
     }
 
     // 4. The last one to construct
-    LmaNodeLE0 *node_cur_le0 = NULL;  // only one of them is valid
-    LmaNodeGE1 *node_cur_ge1 = NULL;
+    LmaNodeLE0* node_cur_le0 = NULL;  // only one of them is valid
+    LmaNodeGE1* node_cur_ge1 = NULL;
     if (0 == level) {
         node_cur_le0 = son_1st_le0 + son_pos;
         node_cur_le0->spl_idx = spl_idx_node;
@@ -845,7 +845,7 @@ bool DictBuilder::construct_subset(void *parent, LemmaEntry *lemma_arr, size_t i
     }
 
     if (homo_num > 0) {
-        LemmaIdType *idx_buf = homo_idx_buf_ + homo_idx_num_eq1_ + homo_idx_num_gt1_ - homo_num;
+        LemmaIdType* idx_buf = homo_idx_buf_ + homo_idx_num_eq1_ + homo_idx_num_gt1_ - homo_num;
         if (0 == level) {
             assert(homo_num <= 65535);
             node_cur_le0->num_of_homo = static_cast<uint16>(homo_num);
@@ -866,11 +866,11 @@ bool DictBuilder::construct_subset(void *parent, LemmaEntry *lemma_arr, size_t i
     }
 
     if (item_end - item_start_next > homo_num) {
-        void *next_parent;
+        void* next_parent;
         if (0 == level)
-            next_parent = static_cast<void *>(node_cur_le0);
+            next_parent = static_cast<void*>(node_cur_le0);
         else
-            next_parent = static_cast<void *>(node_cur_ge1);
+            next_parent = static_cast<void*>(node_cur_ge1);
         construct_subset(next_parent, lemma_arr, item_start_next + homo_num, item_end, level + 1);
 #ifdef ___DO_STATISTICS___
 

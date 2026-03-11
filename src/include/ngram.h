@@ -45,7 +45,7 @@ class NGram {
     static const size_t kSysDictTotalFreq = 100000000;
 
    private:
-    static NGram *instance_;
+    static NGram* instance_;
 
     bool initialized_;
     size_t idx_num_;
@@ -58,19 +58,19 @@ class NGram {
     float sys_score_compensation_;
 
 #ifdef ___BUILD_MODEL___
-    double *freq_codes_df_;
+    double* freq_codes_df_;
 #endif
-    LmaScoreType *freq_codes_;
-    CODEBOOK_TYPE *lma_freq_idx_;
+    LmaScoreType* freq_codes_;
+    CODEBOOK_TYPE* lma_freq_idx_;
 
    public:
     NGram();
     ~NGram();
 
-    static NGram &get_instance();
+    static NGram& get_instance();
 
-    bool save_ngram(FILE *fp);
-    bool load_ngram(FILE *fp);
+    bool save_ngram(FILE* fp);
+    bool load_ngram(FILE* fp);
 
     // Set the total frequency of all none system dictionaries.
     void set_total_freq_none_sys(size_t freq_none_sys);
@@ -86,7 +86,7 @@ class NGram {
 
 #ifdef ___BUILD_MODEL___
     // For constructing the unigram mode model.
-    bool build_unigram(LemmaEntry *lemma_arr, size_t num, LemmaIdType next_idx_unused);
+    bool build_unigram(LemmaEntry* lemma_arr, size_t num, LemmaIdType next_idx_unused);
 #endif
 };
 }  // namespace ime_pinyin

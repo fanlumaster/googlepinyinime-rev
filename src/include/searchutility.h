@@ -111,27 +111,27 @@ bool is_system_lemma(LemmaIdType lma_id);
 bool is_user_lemma(LemmaIdType lma_id);
 bool is_composing_lemma(LemmaIdType lma_id);
 
-int cmp_lpi_with_psb(const void *p1, const void *p2);
-int cmp_lpi_with_unified_psb(const void *p1, const void *p2);
-int cmp_lpi_with_id(const void *p1, const void *p2);
-int cmp_lpi_with_hanzi(const void *p1, const void *p2);
+int cmp_lpi_with_psb(const void* p1, const void* p2);
+int cmp_lpi_with_unified_psb(const void* p1, const void* p2);
+int cmp_lpi_with_id(const void* p1, const void* p2);
+int cmp_lpi_with_hanzi(const void* p1, const void* p2);
 
-int cmp_lpsi_with_str(const void *p1, const void *p2);
+int cmp_lpsi_with_str(const void* p1, const void* p2);
 
-int cmp_hanzis_1(const void *p1, const void *p2);
-int cmp_hanzis_2(const void *p1, const void *p2);
-int cmp_hanzis_3(const void *p1, const void *p2);
-int cmp_hanzis_4(const void *p1, const void *p2);
-int cmp_hanzis_5(const void *p1, const void *p2);
-int cmp_hanzis_6(const void *p1, const void *p2);
-int cmp_hanzis_7(const void *p1, const void *p2);
-int cmp_hanzis_8(const void *p1, const void *p2);
+int cmp_hanzis_1(const void* p1, const void* p2);
+int cmp_hanzis_2(const void* p1, const void* p2);
+int cmp_hanzis_3(const void* p1, const void* p2);
+int cmp_hanzis_4(const void* p1, const void* p2);
+int cmp_hanzis_5(const void* p1, const void* p2);
+int cmp_hanzis_6(const void* p1, const void* p2);
+int cmp_hanzis_7(const void* p1, const void* p2);
+int cmp_hanzis_8(const void* p1, const void* p2);
 
-int cmp_npre_by_score(const void *p1, const void *p2);
-int cmp_npre_by_hislen_score(const void *p1, const void *p2);
-int cmp_npre_by_hanzi_score(const void *p1, const void *p2);
+int cmp_npre_by_score(const void* p1, const void* p2);
+int cmp_npre_by_hislen_score(const void* p1, const void* p2);
+int cmp_npre_by_hanzi_score(const void* p1, const void* p2);
 
-size_t remove_duplicate_npre(NPredictItem *npre_items, size_t npre_num);
+size_t remove_duplicate_npre(NPredictItem* npre_items, size_t npre_num);
 
 size_t align_to_size_t(size_t size);
 

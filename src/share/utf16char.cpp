@@ -23,7 +23,7 @@ namespace ime_pinyin {
 extern "C" {
 #endif
 
-char16 *utf16_strtok(char16 *utf16_str, size_t *token_size, char16 **utf16_str_next) {
+char16* utf16_strtok(char16* utf16_str, size_t* token_size, char16** utf16_str_next) {
     if (NULL == utf16_str || NULL == token_size || NULL == utf16_str_next) {
         return NULL;
     }
@@ -39,7 +39,7 @@ char16 *utf16_strtok(char16 *utf16_str, size_t *token_size, char16 **utf16_str_n
         pos++;
     }
 
-    char16 *ret_val = utf16_str;
+    char16* ret_val = utf16_str;
     if ((char16)'\0' == utf16_str[pos]) {
         *utf16_str_next = NULL;
         if (0 == pos) return NULL;
@@ -53,7 +53,7 @@ char16 *utf16_strtok(char16 *utf16_str, size_t *token_size, char16 **utf16_str_n
     return ret_val;
 }
 
-int utf16_atoi(const char16 *utf16_str) {
+int utf16_atoi(const char16* utf16_str) {
     if (NULL == utf16_str) return 0;
 
     int value = 0;
@@ -73,7 +73,7 @@ int utf16_atoi(const char16 *utf16_str) {
     return value * sign;
 }
 
-float utf16_atof(const char16 *utf16_str) {
+float utf16_atof(const char16* utf16_str) {
     // A temporary implemetation.
     char char8[256];
     if (utf16_strlen(utf16_str) >= 256) return 0;
@@ -82,7 +82,7 @@ float utf16_atof(const char16 *utf16_str) {
     return atof(char8);
 }
 
-size_t utf16_strlen(const char16 *utf16_str) {
+size_t utf16_strlen(const char16* utf16_str) {
     if (NULL == utf16_str) return 0;
 
     size_t size = 0;
@@ -90,14 +90,14 @@ size_t utf16_strlen(const char16 *utf16_str) {
     return size;
 }
 
-int utf16_strcmp(const char16 *str1, const char16 *str2) {
+int utf16_strcmp(const char16* str1, const char16* str2) {
     size_t pos = 0;
     while (str1[pos] == str2[pos] && (char16)'\0' != str1[pos]) pos++;
 
     return static_cast<int>(str1[pos]) - static_cast<int>(str2[pos]);
 }
 
-int utf16_strncmp(const char16 *str1, const char16 *str2, size_t size) {
+int utf16_strncmp(const char16* str1, const char16* str2, size_t size) {
     size_t pos = 0;
     while (pos < size && str1[pos] == str2[pos] && (char16)'\0' != str1[pos]) pos++;
 
@@ -107,10 +107,10 @@ int utf16_strncmp(const char16 *str1, const char16 *str2, size_t size) {
 }
 
 // we do not consider overlapping
-char16 *utf16_strcpy(char16 *dst, const char16 *src) {
+char16* utf16_strcpy(char16* dst, const char16* src) {
     if (NULL == src || NULL == dst) return NULL;
 
-    char16 *cp = dst;
+    char16* cp = dst;
 
     while ((char16)'\0' != *src) {
         *cp = *src;
@@ -123,12 +123,12 @@ char16 *utf16_strcpy(char16 *dst, const char16 *src) {
     return dst;
 }
 
-char16 *utf16_strncpy(char16 *dst, const char16 *src, size_t size) {
+char16* utf16_strncpy(char16* dst, const char16* src, size_t size) {
     if (NULL == src || NULL == dst || 0 == size) return NULL;
 
     if (src == dst) return dst;
 
-    char16 *cp = dst;
+    char16* cp = dst;
 
     if (dst < src || (dst > src && dst >= src + size)) {
         while (size-- && (*cp++ = *src++));
@@ -142,10 +142,10 @@ char16 *utf16_strncpy(char16 *dst, const char16 *src, size_t size) {
 
 // We do not handle complicated cases like overlapping, because in this
 // codebase, it is not necessary.
-char *utf16_strcpy_tochar(char *dst, const char16 *src) {
+char* utf16_strcpy_tochar(char* dst, const char16* src) {
     if (NULL == src || NULL == dst) return NULL;
 
-    char *cp = dst;
+    char* cp = dst;
 
     while ((char16)'\0' != *src) {
         *cp = static_cast<char>(*src);

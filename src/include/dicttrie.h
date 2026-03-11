@@ -55,12 +55,12 @@ class DictTrie : AtomDictBase {
         uint16 mark_num;
     };
 
-    DictList *dict_list_;
+    DictList* dict_list_;
 
-    const SpellingTrie *spl_trie_;
+    const SpellingTrie* spl_trie_;
 
-    LmaNodeLE0 *root_;       // Nodes for root and the first layer.
-    LmaNodeGE1 *nodes_ge1_;  // Nodes for other layers.
+    LmaNodeLE0* root_;       // Nodes for root and the first layer.
+    LmaNodeGE1* nodes_ge1_;  // Nodes for other layers.
 
     // An quick index from spelling id to the LmaNodeLE0 node buffer, or
     // to the root_ buffer.
@@ -71,69 +71,69 @@ class DictTrie : AtomDictBase {
     // corresponding full ids.
     // So, given an id splid, the son is:
     // root_[splid_le0_index_[splid - kFullSplIdStart]]
-    uint16 *splid_le0_index_;
+    uint16* splid_le0_index_;
 
     size_t lma_node_num_le0_;
     size_t lma_node_num_ge1_;
 
     // The first part is for homophnies, and the last  top_lma_num_ items are
     // lemmas with highest scores.
-    unsigned char *lma_idx_buf_;
+    unsigned char* lma_idx_buf_;
     size_t lma_idx_buf_len_;  // The total size of lma_idx_buf_ in byte.
     size_t total_lma_num_;    // Total number of lemmas in this dictionary.
     size_t top_lmas_num_;     // Number of lemma with highest scores.
 
     // Parsing mark list used to mark the detailed extended statuses.
-    ParsingMark *parsing_marks_;
+    ParsingMark* parsing_marks_;
     // The position for next available mark.
     uint16 parsing_marks_pos_;
 
     // Mile stone list used to mark the extended status.
-    MileStone *mile_stones_;
+    MileStone* mile_stones_;
     // The position for the next available mile stone. We use positions (except 0)
     // as handles.
     MileStoneHandle mile_stones_pos_;
 
     // Get the offset of sons for a node.
-    inline size_t get_son_offset(const LmaNodeGE1 *node);
+    inline size_t get_son_offset(const LmaNodeGE1* node);
 
     // Get the offset of homonious ids for a node.
-    inline size_t get_homo_idx_buf_offset(const LmaNodeGE1 *node);
+    inline size_t get_homo_idx_buf_offset(const LmaNodeGE1* node);
 
     // Get the lemma id by the offset.
     inline LemmaIdType get_lemma_id(size_t id_offset);
 
     void free_resource(bool free_dict_list);
 
-    bool load_dict(FILE *fp);
+    bool load_dict(FILE* fp);
 
     // Given a LmaNodeLE0 node, extract the lemmas specified by it, and fill
     // them into the lpi_items buffer.
     // This function is called by the search engine.
-    size_t fill_lpi_buffer(LmaPsbItem lpi_items[], size_t max_size, LmaNodeLE0 *node);
+    size_t fill_lpi_buffer(LmaPsbItem lpi_items[], size_t max_size, LmaNodeLE0* node);
 
     // Given a LmaNodeGE1 node, extract the lemmas specified by it, and fill
     // them into the lpi_items buffer.
     // This function is called by inner functions extend_dict0(), extend_dict1()
     // and extend_dict2().
-    size_t fill_lpi_buffer(LmaPsbItem lpi_items[], size_t max_size, size_t homo_buf_off, LmaNodeGE1 *node, uint16 lma_len);
+    size_t fill_lpi_buffer(LmaPsbItem lpi_items[], size_t max_size, size_t homo_buf_off, LmaNodeGE1* node, uint16 lma_len);
 
     // Extend in the trie from level 0.
-    MileStoneHandle extend_dict0(MileStoneHandle from_handle, const DictExtPara *dep, LmaPsbItem *lpi_items, size_t lpi_max, size_t *lpi_num);
+    MileStoneHandle extend_dict0(MileStoneHandle from_handle, const DictExtPara* dep, LmaPsbItem* lpi_items, size_t lpi_max, size_t* lpi_num);
 
     // Extend in the trie from level 1.
-    MileStoneHandle extend_dict1(MileStoneHandle from_handle, const DictExtPara *dep, LmaPsbItem *lpi_items, size_t lpi_max, size_t *lpi_num);
+    MileStoneHandle extend_dict1(MileStoneHandle from_handle, const DictExtPara* dep, LmaPsbItem* lpi_items, size_t lpi_max, size_t* lpi_num);
 
     // Extend in the trie from level 2.
-    MileStoneHandle extend_dict2(MileStoneHandle from_handle, const DictExtPara *dep, LmaPsbItem *lpi_items, size_t lpi_max, size_t *lpi_num);
+    MileStoneHandle extend_dict2(MileStoneHandle from_handle, const DictExtPara* dep, LmaPsbItem* lpi_items, size_t lpi_max, size_t* lpi_num);
 
     // Try to extend the given spelling id buffer, and if the given id_lemma can
     // be successfully gotten, return true;
     // The given spelling ids are all valid full ids.
-    bool try_extend(const uint16 *splids, uint16 splid_num, LemmaIdType id_lemma);
+    bool try_extend(const uint16* splids, uint16 splid_num, LemmaIdType id_lemma);
 
 #ifdef ___BUILD_MODEL___
-    bool save_dict(FILE *fp);
+    bool save_dict(FILE* fp);
 #endif  // ___BUILD_MODEL___
 
     // Increase limits to support longer Pinyin input.
@@ -153,35 +153,35 @@ class DictTrie : AtomDictBase {
     // Construct the tree from the file fn_raw.
     // fn_validhzs provide the valid hanzi list. If fn_validhzs is
     // NULL, only chars in GB2312 will be included.
-    bool build_dict(const char *fn_raw, const char *fn_validhzs);
+    bool build_dict(const char* fn_raw, const char* fn_validhzs);
 
     // Save the binary dictionary
     // Actually, the SpellingTrie/DictList instance will be also saved.
-    bool save_dict(const char *filename);
+    bool save_dict(const char* filename);
 #endif  // ___BUILD_MODEL___
 
-    void convert_to_hanzis(char16 *str, uint16 str_len);
+    void convert_to_hanzis(char16* str, uint16 str_len);
 
-    void convert_to_scis_ids(char16 *str, uint16 str_len);
+    void convert_to_scis_ids(char16* str, uint16 str_len);
 
     // Load a binary dictionary
     // The SpellingTrie instance/DictList will be also loaded
-    bool load_dict(const char *filename, LemmaIdType start_id, LemmaIdType end_id);
+    bool load_dict(const char* filename, LemmaIdType start_id, LemmaIdType end_id);
     bool load_dict_fd(int sys_fd, long start_offset, long length, LemmaIdType start_id, LemmaIdType end_id);
     bool close_dict() { return true; }
     size_t number_of_lemmas() { return 0; }
 
     void reset_milestones(uint16 from_step, MileStoneHandle from_handle);
 
-    MileStoneHandle extend_dict(MileStoneHandle from_handle, const DictExtPara *dep, LmaPsbItem *lpi_items, size_t lpi_max, size_t *lpi_num);
+    MileStoneHandle extend_dict(MileStoneHandle from_handle, const DictExtPara* dep, LmaPsbItem* lpi_items, size_t lpi_max, size_t* lpi_num);
 
-    size_t get_lpis(const uint16 *splid_str, uint16 splid_str_len, LmaPsbItem *lpi_items, size_t lpi_max);
+    size_t get_lpis(const uint16* splid_str, uint16 splid_str_len, LmaPsbItem* lpi_items, size_t lpi_max);
 
-    uint16 get_lemma_str(LemmaIdType id_lemma, char16 *str_buf, uint16 str_max);
+    uint16 get_lemma_str(LemmaIdType id_lemma, char16* str_buf, uint16 str_max);
 
-    uint16 get_lemma_splids(LemmaIdType id_lemma, uint16 *splids, uint16 splids_max, bool arg_valid);
+    uint16 get_lemma_splids(LemmaIdType id_lemma, uint16* splids, uint16 splids_max, bool arg_valid);
 
-    size_t predict(const char16 *last_hzs, uint16 hzs_len, NPredictItem *npre_items, size_t npre_max, size_t b4_used);
+    size_t predict(const char16* last_hzs, uint16 hzs_len, NPredictItem* npre_items, size_t npre_max, size_t b4_used);
 
     LemmaIdType put_lemma(char16 /*lemma_str*/[], uint16 /*splids*/[], uint16 /*lemma_len*/, uint16 /*count*/) { return 0; }
 
@@ -204,7 +204,7 @@ class DictTrie : AtomDictBase {
 
     // Fill the lemmas with highest scores to the prediction buffer.
     // his_len is the history length to fill in the prediction buffer.
-    size_t predict_top_lmas(size_t his_len, NPredictItem *npre_items, size_t npre_max, size_t b4_used);
+    size_t predict_top_lmas(size_t his_len, NPredictItem* npre_items, size_t npre_max, size_t b4_used);
 };
 }  // namespace ime_pinyin
 

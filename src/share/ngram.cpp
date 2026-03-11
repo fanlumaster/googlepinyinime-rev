@@ -26,9 +26,9 @@ namespace ime_pinyin {
 
 #define ADD_COUNT 0.3
 
-int comp_double(const void *p1, const void *p2) {
-    if (*static_cast<const double *>(p1) < *static_cast<const double *>(p2)) return -1;
-    if (*static_cast<const double *>(p1) > *static_cast<const double *>(p2)) return 1;
+int comp_double(const void* p1, const void* p2) {
+    if (*static_cast<const double*>(p1) < *static_cast<const double*>(p2)) return -1;
+    if (*static_cast<const double*>(p1) > *static_cast<const double*>(p2)) return 1;
     return 0;
 }
 
@@ -54,7 +54,7 @@ int qsearch_nearest(double code_book[], double freq, int start, int end) {
         return qsearch_nearest(code_book, freq, mid, end);
 }
 
-size_t update_code_idx(double freqs[], size_t num, double code_book[], CODEBOOK_TYPE *code_idx) {
+size_t update_code_idx(double freqs[], size_t num, double code_book[], CODEBOOK_TYPE* code_idx) {
     size_t changed = 0;
     for (size_t pos = 0; pos < num; pos++) {
         CODEBOOK_TYPE idx;
@@ -65,14 +65,14 @@ size_t update_code_idx(double freqs[], size_t num, double code_book[], CODEBOOK_
     return changed;
 }
 
-double recalculate_kernel(double freqs[], size_t num, double code_book[], CODEBOOK_TYPE *code_idx) {
+double recalculate_kernel(double freqs[], size_t num, double code_book[], CODEBOOK_TYPE* code_idx) {
     double ret = 0;
 
-    size_t *item_num = new size_t[kCodeBookSize];
+    size_t* item_num = new size_t[kCodeBookSize];
     assert(item_num);
     memset(item_num, 0, sizeof(size_t) * kCodeBookSize);
 
-    double *cb_new = new double[kCodeBookSize];
+    double* cb_new = new double[kCodeBookSize];
     assert(cb_new);
     memset(cb_new, 0, sizeof(double) * kCodeBookSize);
 
@@ -94,7 +94,7 @@ double recalculate_kernel(double freqs[], size_t num, double code_book[], CODEBO
     return ret;
 }
 
-void iterate_codes(double freqs[], size_t num, double code_book[], CODEBOOK_TYPE *code_idx) {
+void iterate_codes(double freqs[], size_t num, double code_book[], CODEBOOK_TYPE* code_idx) {
     size_t iter_num = 0;
     double delta_last = 0;
     do {
@@ -112,7 +112,7 @@ void iterate_codes(double freqs[], size_t num, double code_book[], CODEBOOK_TYPE
     } while (true);
 }
 
-NGram *NGram::instance_ = NULL;
+NGram* NGram::instance_ = NULL;
 
 NGram::NGram() {
     initialized_ = false;
@@ -136,12 +136,12 @@ NGram::~NGram() {
     if (NULL != freq_codes_) free(freq_codes_);
 }
 
-NGram &NGram::get_instance() {
+NGram& NGram::get_instance() {
     if (NULL == instance_) instance_ = new NGram();
     return *instance_;
 }
 
-bool NGram::save_ngram(FILE *fp) {
+bool NGram::save_ngram(FILE* fp) {
     if (!initialized_ || NULL == fp) return false;
 
     if (0 == idx_num_ || NULL == freq_codes_ || NULL == lma_freq_idx_) return false;
@@ -155,7 +155,7 @@ bool NGram::save_ngram(FILE *fp) {
     return true;
 }
 
-bool NGram::load_ngram(FILE *fp) {
+bool NGram::load_ngram(FILE* fp) {
     if (NULL == fp) return false;
 
     initialized_ = false;
@@ -166,8 +166,8 @@ bool NGram::load_ngram(FILE *fp) {
 
     if (NULL != freq_codes_) free(freq_codes_);
 
-    lma_freq_idx_ = static_cast<CODEBOOK_TYPE *>(malloc(idx_num_ * sizeof(CODEBOOK_TYPE)));
-    freq_codes_ = static_cast<LmaScoreType *>(malloc(kCodeBookSize * sizeof(LmaScoreType)));
+    lma_freq_idx_ = static_cast<CODEBOOK_TYPE*>(malloc(idx_num_ * sizeof(CODEBOOK_TYPE)));
+    freq_codes_ = static_cast<LmaScoreType*>(malloc(kCodeBookSize * sizeof(LmaScoreType)));
 
     if (NULL == lma_freq_idx_ || NULL == freq_codes_) return false;
 
@@ -203,11 +203,11 @@ float NGram::convert_psb_to_score(double psb) {
 }
 
 #ifdef ___BUILD_MODEL___
-bool NGram::build_unigram(LemmaEntry *lemma_arr, size_t lemma_num, LemmaIdType next_idx_unused) {
+bool NGram::build_unigram(LemmaEntry* lemma_arr, size_t lemma_num, LemmaIdType next_idx_unused) {
     if (NULL == lemma_arr || 0 == lemma_num || next_idx_unused <= 1) return false;
 
     double total_freq = 0;
-    double *freqs = new double[next_idx_unused];
+    double* freqs = new double[next_idx_unused];
     if (NULL == freqs) return false;
 
     freqs[0] = ADD_COUNT;

@@ -26,7 +26,7 @@
 
 #ifdef _WIN32
 #include <time.h>
-#include <winsock.h> // timeval
+#include <winsock.h>  // timeval
 #else
 #include <pthread.h>
 #include <sys/time.h>
@@ -40,7 +40,7 @@ class UserDict : public AtomDictBase {
     UserDict();
     ~UserDict();
 
-    bool load_dict(const char *file_name, LemmaIdType start_id, LemmaIdType end_id);
+    bool load_dict(const char* file_name, LemmaIdType start_id, LemmaIdType end_id);
 
     bool close_dict();
 
@@ -48,15 +48,15 @@ class UserDict : public AtomDictBase {
 
     void reset_milestones(uint16 from_step, MileStoneHandle from_handle);
 
-    MileStoneHandle extend_dict(MileStoneHandle from_handle, const DictExtPara *dep, LmaPsbItem *lpi_items, size_t lpi_max, size_t *lpi_num);
+    MileStoneHandle extend_dict(MileStoneHandle from_handle, const DictExtPara* dep, LmaPsbItem* lpi_items, size_t lpi_max, size_t* lpi_num);
 
-    size_t get_lpis(const uint16 *splid_str, uint16 splid_str_len, LmaPsbItem *lpi_items, size_t lpi_max);
+    size_t get_lpis(const uint16* splid_str, uint16 splid_str_len, LmaPsbItem* lpi_items, size_t lpi_max);
 
-    uint16 get_lemma_str(LemmaIdType id_lemma, char16 *str_buf, uint16 str_max);
+    uint16 get_lemma_str(LemmaIdType id_lemma, char16* str_buf, uint16 str_max);
 
-    uint16 get_lemma_splids(LemmaIdType id_lemma, uint16 *splids, uint16 splids_max, bool arg_valid);
+    uint16 get_lemma_splids(LemmaIdType id_lemma, uint16* splids, uint16 splids_max, bool arg_valid);
 
-    size_t predict(const char16 last_hzs[], uint16 hzs_len, NPredictItem *npre_items, size_t npre_max, size_t b4_used);
+    size_t predict(const char16 last_hzs[], uint16 hzs_len, NPredictItem* npre_items, size_t npre_max, size_t b4_used);
 
     // Full spelling ids are required
     LemmaIdType put_lemma(char16 lemma_str[], uint16 splids[], uint16 lemma_len, uint16 count);
@@ -95,7 +95,7 @@ class UserDict : public AtomDictBase {
      * @param len length of lemmas string in UTF-16LE
      * @return newly added lemma count
      */
-    int put_lemmas_no_sync_from_utf16le_string(char16 *lemmas, int len);
+    int put_lemmas_no_sync_from_utf16le_string(char16* lemmas, int len);
 
     /**
      * Get lemmas need sync to a UTF-16LE string of above format.
@@ -107,13 +107,13 @@ class UserDict : public AtomDictBase {
      * @param count output value of lemma returned
      * @return UTF-16LE string length
      */
-    int get_sync_lemmas_in_utf16le_string_from_beginning(char16 *str, int size, int *count);
+    int get_sync_lemmas_in_utf16le_string_from_beginning(char16* str, int size, int* count);
 
 #endif
 
     struct UserDictStat {
         uint32 version;
-        const char *file_name;
+        const char* file_name;
         struct timeval load_time;
         struct timeval last_update;
         uint32 disk_size;
@@ -129,19 +129,19 @@ class UserDict : public AtomDictBase {
         uint32 limit_lemma_size;
     };
 
-    bool state(UserDictStat *stat);
+    bool state(UserDictStat* stat);
 
    private:
     uint32 total_other_nfreq_;
     struct timeval load_time_;
     LemmaIdType start_id_;
     uint32 version_;
-    uint8 *lemmas_;
+    uint8* lemmas_;
 
     // In-Memory-Only flag for each lemma
     static const uint8 kUserDictLemmaFlagRemove = 1;
     // Inuse lemmas' offset
-    uint32 *offsets_;
+    uint32* offsets_;
     // Highest bit in offset tells whether corresponding lemma is removed
     static const uint32 kUserDictOffsetFlagRemove = (1 << 31);
     // Maximum possible for the offset
@@ -157,22 +157,22 @@ class UserDict : public AtomDictBase {
     static const uint64 kUserDictLMTSince = COARSE_UTC(2009, 1, 1, 0, 0, 0);
 
     // Correspond to offsets_
-    uint32 *scores_;
+    uint32* scores_;
     // Following two fields are only valid in memory
-    uint32 *ids_;
+    uint32* ids_;
 #ifdef ___PREDICT_ENABLED___
-    uint32 *predicts_;
+    uint32* predicts_;
 #endif
 #ifdef ___SYNC_ENABLED___
-    uint32 *syncs_;
+    uint32* syncs_;
     size_t sync_count_size_;
 #endif
-    uint32 *offsets_by_id_;
+    uint32* offsets_by_id_;
 
     size_t lemma_count_left_;
     size_t lemma_size_left_;
 
-    const char *dict_file_;
+    const char* dict_file_;
 
     // Be sure size is 4xN
     struct UserDictInfo {
@@ -250,19 +250,19 @@ class UserDict : public AtomDictBase {
 
     void cache_init();
 
-    void cache_push(UserDictCacheType type, UserDictSearchable *searchable, uint32 offset, uint32 length);
+    void cache_push(UserDictCacheType type, UserDictSearchable* searchable, uint32 offset, uint32 length);
 
-    bool cache_hit(UserDictSearchable *searchable, uint32 *offset, uint32 *length);
+    bool cache_hit(UserDictSearchable* searchable, uint32* offset, uint32* length);
 
-    bool load_cache(UserDictSearchable *searchable, uint32 *offset, uint32 *length);
+    bool load_cache(UserDictSearchable* searchable, uint32* offset, uint32* length);
 
-    void save_cache(UserDictSearchable *searchable, uint32 offset, uint32 length);
+    void save_cache(UserDictSearchable* searchable, uint32 offset, uint32 length);
 
     void reset_cache();
 
-    bool load_miss_cache(UserDictSearchable *searchable);
+    bool load_miss_cache(UserDictSearchable* searchable);
 
-    void save_miss_cache(UserDictSearchable *searchable);
+    void save_miss_cache(UserDictSearchable* searchable);
 
     void reset_miss_cache();
 #endif
@@ -275,29 +275,29 @@ class UserDict : public AtomDictBase {
 
     inline int build_score(uint64 lmt, int freq);
 
-    inline int64 utf16le_atoll(uint16 *s, int len);
+    inline int64 utf16le_atoll(uint16* s, int len);
 
-    inline int utf16le_lltoa(int64 v, uint16 *s, int size);
+    inline int utf16le_lltoa(int64 v, uint16* s, int size);
 
     LemmaIdType _put_lemma(char16 lemma_str[], uint16 splids[], uint16 lemma_len, uint16 count, uint64 lmt);
 
-    size_t _get_lpis(const uint16 *splid_str, uint16 splid_str_len, LmaPsbItem *lpi_items, size_t lpi_max, bool *need_extend);
+    size_t _get_lpis(const uint16* splid_str, uint16 splid_str_len, LmaPsbItem* lpi_items, size_t lpi_max, bool* need_extend);
 
     int _get_lemma_score(char16 lemma_str[], uint16 splids[], uint16 lemma_len);
 
     int _get_lemma_score(LemmaIdType lemma_id);
 
-    int is_fuzzy_prefix_spell_id(const uint16 *id1, uint16 len1, const UserDictSearchable *searchable);
+    int is_fuzzy_prefix_spell_id(const uint16* id1, uint16 len1, const UserDictSearchable* searchable);
 
-    bool is_prefix_spell_id(const uint16 *fullids, uint16 fulllen, const UserDictSearchable *searchable);
+    bool is_prefix_spell_id(const uint16* fullids, uint16 fulllen, const UserDictSearchable* searchable);
 
-    uint32 get_dict_file_size(UserDictInfo *info);
+    uint32 get_dict_file_size(UserDictInfo* info);
 
-    bool reset(const char *file);
+    bool reset(const char* file);
 
-    bool validate(const char *file);
+    bool validate(const char* file);
 
-    bool load(const char *file, LemmaIdType start_id);
+    bool load(const char* file, LemmaIdType start_id);
 
     bool is_valid_state();
 
@@ -311,22 +311,22 @@ class UserDict : public AtomDictBase {
 
     char get_lemma_nchar(uint32 offset);
 
-    uint16 *get_lemma_spell_ids(uint32 offset);
+    uint16* get_lemma_spell_ids(uint32 offset);
 
-    uint16 *get_lemma_word(uint32 offset);
+    uint16* get_lemma_word(uint32 offset);
 
     // Prepare searchable to fasten locate process
-    void prepare_locate(UserDictSearchable *searchable, const uint16 *splids, uint16 len);
+    void prepare_locate(UserDictSearchable* searchable, const uint16* splids, uint16 len);
 
     // Compare initial letters only
-    int32 fuzzy_compare_spell_id(const uint16 *id1, uint16 len1, const UserDictSearchable *searchable);
+    int32 fuzzy_compare_spell_id(const uint16* id1, uint16 len1, const UserDictSearchable* searchable);
 
     // Compare exactly two spell ids
     // First argument must be a full id spell id
-    bool equal_spell_id(const uint16 *fullids, uint16 fulllen, const UserDictSearchable *searchable);
+    bool equal_spell_id(const uint16* fullids, uint16 fulllen, const UserDictSearchable* searchable);
 
     // Find first item by initial letters
-    int32 locate_first_in_offsets(const UserDictSearchable *searchable);
+    int32 locate_first_in_offsets(const UserDictSearchable* searchable);
 
     LemmaIdType append_a_lemma(char16 lemma_str[], uint16 splids[], uint16 lemma_len, uint16 count, uint64 lmt);
 
@@ -335,9 +335,9 @@ class UserDict : public AtomDictBase {
 
     bool remove_lemma_by_offset_index(int offset_index);
 #ifdef ___PREDICT_ENABLED___
-    uint32 locate_where_to_insert_in_predicts(const uint16 *words, int lemma_len);
+    uint32 locate_where_to_insert_in_predicts(const uint16* words, int lemma_len);
 
-    int32 locate_first_in_predicts(const uint16 *words, int lemma_len);
+    int32 locate_first_in_predicts(const uint16* words, int lemma_len);
 
     void remove_lemma_from_predict_list(uint32 offset);
 #endif
@@ -359,9 +359,9 @@ class UserDict : public AtomDictBase {
         uint32 offset_index;
     };
 
-    inline void swap(UserDictScoreOffsetPair *sop, int i, int j);
+    inline void swap(UserDictScoreOffsetPair* sop, int i, int j);
 
-    void shift_down(UserDictScoreOffsetPair *sop, int i, int n);
+    void shift_down(UserDictScoreOffsetPair* sop, int i, int n);
 
     // On-disk format for each lemma
     // +-------------+

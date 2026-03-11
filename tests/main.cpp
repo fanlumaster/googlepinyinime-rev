@@ -7,8 +7,8 @@
 #include <utf8cpp/utf8.h>
 #include <Windows.h>
 
-std::string fromUtf16(const ime_pinyin::char16 *buf, size_t len) {
-    const char16_t *utf16Data = reinterpret_cast<const char16_t *>(buf);
+std::string fromUtf16(const ime_pinyin::char16* buf, size_t len) {
+    const char16_t* utf16Data = reinterpret_cast<const char16_t*>(buf);
     std::u16string utf16Str(utf16Data, len);
 
     std::string utf8Result;
@@ -17,14 +17,14 @@ std::string fromUtf16(const ime_pinyin::char16 *buf, size_t len) {
     return utf8Result;
 }
 
-void test_pinyin_search_and_segment(const std::string &user_pinyin) {
+void test_pinyin_search_and_segment(const std::string& user_pinyin) {
     auto start_time = std::chrono::high_resolution_clock::now();
 
     std::string pinyin_str = user_pinyin;
 
-    const char *pinyin = pinyin_str.c_str();
+    const char* pinyin = pinyin_str.c_str();
     size_t cand_cnt = ime_pinyin::im_search(pinyin, strlen(pinyin));
-    const ime_pinyin::uint16 *spl_start = nullptr;
+    const ime_pinyin::uint16* spl_start = nullptr;
     size_t segment_count = ime_pinyin::im_get_spl_start_pos(spl_start);
 
     if (spl_start != nullptr && segment_count > 0) {
@@ -64,12 +64,12 @@ void test_pinyin_search_and_segment(const std::string &user_pinyin) {
     std::cout << "========================================" << std::endl;
 }
 
-void test_pinyin_search_when_retriving_first_element(const std::string &user_pinyin) {
+void test_pinyin_search_when_retriving_first_element(const std::string& user_pinyin) {
     auto start_time = std::chrono::high_resolution_clock::now();
 
     std::string pinyin_str = user_pinyin;
 
-    const char *pinyin = pinyin_str.c_str();
+    const char* pinyin = pinyin_str.c_str();
     size_t cand_cnt = ime_pinyin::im_search(pinyin, strlen(pinyin));
     std::string msg;
     std::vector<std::string> candidateList;

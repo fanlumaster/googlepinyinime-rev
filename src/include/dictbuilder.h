@@ -36,38 +36,38 @@ class DictTrie;
 class DictBuilder {
    private:
     // The raw lemma array buffer.
-    LemmaEntry *lemma_arr_;
+    LemmaEntry* lemma_arr_;
     size_t lemma_num_;
 
     // Used to store all possible single char items.
     // Two items may have the same Hanzi while their spelling ids are different.
-    SingleCharItem *scis_;
+    SingleCharItem* scis_;
     size_t scis_num_;
 
     // In the tree, root's level is -1.
     // Lemma nodes for root, and level 0
-    LmaNodeLE0 *lma_nodes_le0_;
+    LmaNodeLE0* lma_nodes_le0_;
 
     // Lemma nodes for layers whose levels are deeper than 0
-    LmaNodeGE1 *lma_nodes_ge1_;
+    LmaNodeGE1* lma_nodes_ge1_;
 
     // Number of used lemma nodes
     size_t lma_nds_used_num_le0_;
     size_t lma_nds_used_num_ge1_;
 
     // Used to store homophonies' ids.
-    LemmaIdType *homo_idx_buf_;
+    LemmaIdType* homo_idx_buf_;
     // Number of homophonies each of which only contains one Chinese character.
     size_t homo_idx_num_eq1_;
     // Number of homophonies each of which contains more than one character.
     size_t homo_idx_num_gt1_;
 
     // The items with highest scores.
-    LemmaEntry *top_lmas_;
+    LemmaEntry* top_lmas_;
     size_t top_lmas_num_;
 
-    SpellingTable *spl_table_;
-    SpellingParser *spl_parser_;
+    SpellingTable* spl_table_;
+    SpellingParser* spl_parser_;
 
 #ifdef ___DO_STATISTICS___
     size_t max_sonbuf_len_[kMaxLemmaSize];
@@ -96,21 +96,21 @@ class DictBuilder {
     // Build dictionary trie from the file fn_raw. File fn_validhzs provides
     // valid chars. If fn_validhzs is NULL, only chars in GB2312 will be
     // included.
-    bool build_dict(const char *fn_raw, const char *fn_validhzs, DictTrie *dict_trie);
+    bool build_dict(const char* fn_raw, const char* fn_validhzs, DictTrie* dict_trie);
 
    private:
     // Fill in the buffer with id. The caller guarantees that the paramters are
     // vaild.
-    void id_to_charbuf(unsigned char *buf, LemmaIdType id);
+    void id_to_charbuf(unsigned char* buf, LemmaIdType id);
 
     // Update the offset of sons for a node.
-    void set_son_offset(LmaNodeGE1 *node, size_t offset);
+    void set_son_offset(LmaNodeGE1* node, size_t offset);
 
     // Update the offset of homophonies' ids for a node.
-    void set_homo_id_buf_offset(LmaNodeGE1 *node, size_t offset);
+    void set_homo_id_buf_offset(LmaNodeGE1* node, size_t offset);
 
     // Format a speling string.
-    void format_spelling_str(char *spl_str);
+    void format_spelling_str(char* spl_str);
 
     // Sort the lemma_arr by the hanzi string, and give each of unique items
     // a id. Why we need to sort the lemma list according to their Hanzi string
@@ -130,23 +130,23 @@ class DictBuilder {
     // item_star to item_end)
     // parent is the parent node to update the necessary information
     // parent can be a member of LmaNodeLE0 or LmaNodeGE1
-    bool construct_subset(void *parent, LemmaEntry *lemma_arr, size_t item_start, size_t item_end, size_t level);
+    bool construct_subset(void* parent, LemmaEntry* lemma_arr, size_t item_start, size_t item_end, size_t level);
 
     // Read valid Chinese Hanzis from the given file.
     // num is used to return number of chars.
     // The return buffer is sorted and caller needs to free the returned buffer.
-    char16 *read_valid_hanzis(const char *fn_validhzs, size_t *num);
+    char16* read_valid_hanzis(const char* fn_validhzs, size_t* num);
 
     // Read a raw dictionary. max_item is the maximum number of items. If there
     // are more items in the ditionary, only the first max_item will be read.
     // Returned value is the number of items successfully read from the file.
-    size_t read_raw_dict(const char *fn_raw, const char *fn_validhzs, size_t max_item);
+    size_t read_raw_dict(const char* fn_raw, const char* fn_validhzs, size_t max_item);
 
     // Try to find if a character is in hzs buffer.
-    bool hz_in_hanzis_list(const char16 *hzs, size_t hzs_len, char16 hz);
+    bool hz_in_hanzis_list(const char16* hzs, size_t hzs_len, char16 hz);
 
     // Try to find if all characters in str are in hzs buffer.
-    bool str_in_hanzis_list(const char16 *hzs, size_t hzs_len, const char16 *str, size_t str_len);
+    bool str_in_hanzis_list(const char16* hzs, size_t hzs_len, const char16* str, size_t str_len);
 
     // Get these lemmas with toppest scores.
     void get_top_lemmas();

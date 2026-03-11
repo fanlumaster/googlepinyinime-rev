@@ -29,11 +29,11 @@ using namespace ime_pinyin;
 static const size_t kMaxPredictNum = 500;
 
 // Used to search Pinyin string and give the best candidate.
-MatrixSearch *matrix_search = NULL;
+MatrixSearch* matrix_search = NULL;
 
 char16 predict_buf[kMaxPredictNum][kMaxPredictSize + 1];
 
-bool im_open_decoder(const char *fn_sys_dict, const char *fn_usr_dict) {
+bool im_open_decoder(const char* fn_sys_dict, const char* fn_usr_dict) {
     if (NULL != matrix_search) delete matrix_search;
 
     matrix_search = new MatrixSearch();
@@ -44,7 +44,7 @@ bool im_open_decoder(const char *fn_sys_dict, const char *fn_usr_dict) {
     return matrix_search->init(fn_sys_dict, fn_usr_dict);
 }
 
-bool im_open_decoder_fd(int sys_fd, long start_offset, long length, const char *fn_usr_dict) {
+bool im_open_decoder_fd(int sys_fd, long start_offset, long length, const char* fn_usr_dict) {
     if (NULL != matrix_search) delete matrix_search;
 
     matrix_search = new MatrixSearch();
@@ -72,7 +72,7 @@ void im_flush_cache() {
 }
 
 // To be updated.
-size_t im_search(const char *pybuf, size_t pylen) {
+size_t im_search(const char* pybuf, size_t pylen) {
     if (NULL == matrix_search) return 0;
 
     matrix_search->search(pybuf, pylen);
@@ -94,19 +94,19 @@ void im_reset_search() {
 // To be removed
 size_t im_add_letter(char ch) { return 0; }
 
-const char *im_get_sps_str(size_t *decoded_len) {
+const char* im_get_sps_str(size_t* decoded_len) {
     if (NULL == matrix_search) return NULL;
 
     return matrix_search->get_pystr(decoded_len);
 }
 
-char16 *im_get_candidate(size_t cand_id, char16 *cand_str, size_t max_len) {
+char16* im_get_candidate(size_t cand_id, char16* cand_str, size_t max_len) {
     if (NULL == matrix_search) return NULL;
 
     return matrix_search->get_candidate(cand_id, cand_str, max_len);
 }
 
-size_t im_get_spl_start_pos(const uint16 *&spl_start) {
+size_t im_get_spl_start_pos(const uint16*& spl_start) {
     if (NULL == matrix_search) return 0;
 
     return matrix_search->get_spl_start(spl_start);
@@ -133,11 +133,11 @@ size_t im_get_fixed_len() {
 // To be removed
 bool im_cancel_input() { return true; }
 
-size_t im_get_predicts(const char16 *his_buf, char16 (*&pre_buf)[kMaxPredictSize + 1]) {
+size_t im_get_predicts(const char16* his_buf, char16 (*&pre_buf)[kMaxPredictSize + 1]) {
     if (NULL == his_buf) return 0;
 
     size_t fixed_len = utf16_strlen(his_buf);
-    const char16 *fixed_ptr = his_buf;
+    const char16* fixed_ptr = his_buf;
     if (fixed_len > kMaxPredictSize) {
         fixed_ptr += fixed_len - kMaxPredictSize;
         fixed_len = kMaxPredictSize;
@@ -148,12 +148,12 @@ size_t im_get_predicts(const char16 *his_buf, char16 (*&pre_buf)[kMaxPredictSize
 }
 
 void im_enable_shm_as_szm(bool enable) {
-    SpellingTrie &spl_trie = SpellingTrie::get_instance();
+    SpellingTrie& spl_trie = SpellingTrie::get_instance();
     spl_trie.szm_enable_shm(enable);
 }
 
 void im_enable_ym_as_szm(bool enable) {
-    SpellingTrie &spl_trie = SpellingTrie::get_instance();
+    SpellingTrie& spl_trie = SpellingTrie::get_instance();
     spl_trie.szm_enable_ym(enable);
 }
 

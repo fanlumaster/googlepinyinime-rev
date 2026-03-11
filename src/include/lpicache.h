@@ -26,17 +26,17 @@ namespace ime_pinyin {
 // Used to cache LmaPsbItem list for half spelling ids.
 class LpiCache {
    private:
-    static LpiCache *instance_;
+    static LpiCache* instance_;
     static const int kMaxLpiCachePerId = 15;
 
-    LmaPsbItem *lpi_cache_;
-    uint16 *lpi_cache_len_;
+    LmaPsbItem* lpi_cache_;
+    uint16* lpi_cache_len_;
 
    public:
     LpiCache();
     ~LpiCache();
 
-    static LpiCache &get_instance();
+    static LpiCache& get_instance();
 
     // Test if the LPI list of the given splid  has been cached.
     // If splid is a full spelling id, it returns false, because we only cache

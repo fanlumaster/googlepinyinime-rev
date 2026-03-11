@@ -61,7 +61,7 @@ class AtomDictBase {
      * parameter.
      * @return True if succeed.
      */
-    virtual bool load_dict(const char *file_name, LemmaIdType start_id, LemmaIdType end_id) = 0;
+    virtual bool load_dict(const char* file_name, LemmaIdType start_id, LemmaIdType end_id) = 0;
 
     /**
      * Close this atom dictionary.
@@ -119,7 +119,7 @@ class AtomDictBase {
      * @param lpi_num Used to return the newly added items.
      * @return The new mile stone for this extending. 0 if fail.
      */
-    virtual MileStoneHandle extend_dict(MileStoneHandle from_handle, const DictExtPara *dep, LmaPsbItem *lpi_items, size_t lpi_max, size_t *lpi_num) = 0;
+    virtual MileStoneHandle extend_dict(MileStoneHandle from_handle, const DictExtPara* dep, LmaPsbItem* lpi_items, size_t lpi_max, size_t* lpi_num) = 0;
 
     /**
      * Get lemma items with scores according to a spelling id stream.
@@ -131,7 +131,7 @@ class AtomDictBase {
      * @param lpi_max The maximum size of the buffer to return result.
      * @return The number of matched items which have been filled in to lpi_items.
      */
-    virtual size_t get_lpis(const uint16 *splid_str, uint16 splid_str_len, LmaPsbItem *lpi_items, size_t lpi_max) = 0;
+    virtual size_t get_lpis(const uint16* splid_str, uint16 splid_str_len, LmaPsbItem* lpi_items, size_t lpi_max) = 0;
 
     /**
      * Get a lemma string (The Chinese string) by the given lemma id.
@@ -141,7 +141,7 @@ class AtomDictBase {
      * @param str_max The maximum size of the buffer.
      * @return The length of the string, 0 if fail.
      */
-    virtual uint16 get_lemma_str(LemmaIdType id_lemma, char16 *str_buf, uint16 str_max) = 0;
+    virtual uint16 get_lemma_str(LemmaIdType id_lemma, char16* str_buf, uint16 str_max) = 0;
 
     /**
      * Get the full spelling ids for the given lemma id.
@@ -155,7 +155,7 @@ class AtomDictBase {
      * case, splids_max is the number of valid ids in splids.
      * @return The number of ids in the buffer.
      */
-    virtual uint16 get_lemma_splids(LemmaIdType id_lemma, uint16 *splids, uint16 splids_max, bool arg_valid) = 0;
+    virtual uint16 get_lemma_splids(LemmaIdType id_lemma, uint16* splids, uint16 splids_max, bool arg_valid) = 0;
 
     /**
      * Function used for prediction.
@@ -170,7 +170,7 @@ class AtomDictBase {
      * from other atom dictionaries. A atom ditionary can just ignore it.
      * @return The number of prediction result from this atom dictionary.
      */
-    virtual size_t predict(const char16 last_hzs[], uint16 hzs_len, NPredictItem *npre_items, size_t npre_max, size_t b4_used) = 0;
+    virtual size_t predict(const char16 last_hzs[], uint16 hzs_len, NPredictItem* npre_items, size_t npre_max, size_t b4_used) = 0;
 
     /**
      * Add a lemma to the dictionary. If the dictionary allows to add new

@@ -35,7 +35,7 @@ Utf16Reader::~Utf16Reader() {
     if (NULL != buffer_) delete[] buffer_;
 }
 
-bool Utf16Reader::open(const char *filename, size_t buffer_len) {
+bool Utf16Reader::open(const char* filename, size_t buffer_len) {
     if (filename == NULL) return false;
 
     if (buffer_len < MIN_BUF_LEN)
@@ -62,7 +62,7 @@ bool Utf16Reader::open(const char *filename, size_t buffer_len) {
     return true;
 }
 
-char16 *Utf16Reader::readline(char16 *read_buf, size_t max_len) {
+char16* Utf16Reader::readline(char16* read_buf, size_t max_len) {
     if (NULL == fp_ || NULL == read_buf || 0 == max_len) return NULL;
 
     size_t ret_len = 0;
