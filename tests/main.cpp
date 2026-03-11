@@ -97,7 +97,8 @@ int main() {
 #ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
 #endif
-    ime_pinyin::im_set_max_lens(64, 32);
+    // Keep output up to 64 Hanzi; input length up to 128 Pinyin chars.
+    ime_pinyin::im_set_max_lens(128, 64);
     if (!ime_pinyin::im_open_decoder("./data/dict_pinyin.dat", "./data/user_dict.dat")) {
         std::cout << "fany bug.\n";
         return 0;
@@ -119,5 +120,7 @@ int main() {
     test_pinyin_search_when_retriving_first_element("ni'shuo'ne'ma'de");
     test_pinyin_search_when_retriving_first_element("wei'ni'qian'gua'bu'bian");
     test_pinyin_search_when_retriving_first_element("wo'lai'kan'kan'zhe'ge'zui'duo'neng'shu'ru'duo'shao'ge'zi'kan'shang'qu'shi'bi'jiao'he'li'de");
+    test_pinyin_search_when_retriving_first_element("zheshikeyishuodemawojuedehaishiyaoweiwanyidianbijiaohaobanishuoneqishizhongguorenshizhegeyangzide");
+    test_pinyin_search_when_retriving_first_element("chulichangjuzishishenme");
     return 0;
 }

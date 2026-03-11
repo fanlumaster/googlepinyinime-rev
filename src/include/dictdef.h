@@ -56,7 +56,10 @@ const size_t kHalfSpellingIdNum = 29;
 // stored.
 // -1 is because that 0 is never used.
 const size_t kMaxSpellingNum = 512 - kHalfSpellingIdNum - 1;
-const size_t kMaxSearchSteps = 40;
+// Increased to allow longer Pinyin input and longer sentence output.
+// Note: changing this requires adjusting related pools in matrixsearch.h
+// and dicttrie.h to avoid search failures under long input.
+const size_t kMaxSearchSteps = 128;
 
 // One character predicts its following characters.
 const size_t kMaxPredictSize = (kMaxLemmaSize - 1);

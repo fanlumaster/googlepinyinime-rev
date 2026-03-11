@@ -136,8 +136,10 @@ class DictTrie : AtomDictBase {
     bool save_dict(FILE *fp);
 #endif  // ___BUILD_MODEL___
 
-    static const int kMaxMileStone = 100;
-    static const int kMaxParsingMark = 600;
+    // Increase limits to support longer Pinyin input.
+    // If kMaxSearchSteps is increased, these must scale accordingly.
+    static const int kMaxMileStone = static_cast<int>(kMaxSearchSteps * 8);
+    static const int kMaxParsingMark = static_cast<int>(kMaxSearchSteps * 64);
     static const MileStoneHandle kFirstValidMileStoneHandle = 1;
 
     friend class DictParser;
