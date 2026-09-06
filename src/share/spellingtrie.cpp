@@ -84,11 +84,11 @@ SpellingTrie::~SpellingTrie() {
     }
 
     if (NULL != dumb_node_) {
-        delete[] dumb_node_;
+        delete dumb_node_;
     }
 
     if (NULL != splitter_node_) {
-        delete[] splitter_node_;
+        delete splitter_node_;
     }
 
     if (NULL != instance_) {
@@ -266,6 +266,14 @@ bool SpellingTrie::construct(const char* spelling_arr, size_t item_size, size_t 
     node_num_ = 1;
 #endif
 
+    // Model reloads reuse this singleton; release the previous tree first.
+    if (root_) {
+        free_son_trie(root_);
+        delete root_;
+    }
+    delete dumb_node_;
+    delete splitter_node_;
+
     root_ = new SpellingNode();
     memset(root_, 0, sizeof(SpellingNode));
 
@@ -346,7 +354,7 @@ bool SpellingTrie::build_ym_info() {
     delete spl_table;
 
     // Generate the maping from the spelling ids to the Yunmu ids.
-    if (spl_ym_ids_) delete spl_ym_ids_;
+    if (spl_ym_ids_) delete[] spl_ym_ids_;
     spl_ym_ids_ = new uint8[spelling_num_ + kFullSplIdStart];
     if (NULL == spl_ym_ids_) return false;
 
