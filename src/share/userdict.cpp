@@ -336,6 +336,9 @@ out:
     free(offsets_by_id_);
     free(scores_);
     free(ids_);
+#ifdef ___SYNC_ENABLED___
+    free(syncs_);
+#endif
 #ifdef ___PREDICT_ENABLED___
     free(predicts_);
 #endif
