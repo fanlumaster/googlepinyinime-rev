@@ -1,0 +1,35 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  merge_group:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  native:
+    name: Native / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15, windows-2025]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Configure decoder regression tests
+        run: cmake -S tests -B build -DCMAKE_BUILD_TYPE=Release
+      - name: Configure dictionary builder
+        run: cmake -S command -B build-dictionary -DCMAKE_BUILD_TYPE=Release
+      - name: Build dictionary builder
+        run: cmake --build build-dictionary --config Release --parallel 4
+      - name: Build
+        run: cmake --build build --config Release --parallel 4
+      - name: Run regression tests
+        run: ctest --test-dir build -C Release --output-on-failure --no-tests=error --timeout 30
